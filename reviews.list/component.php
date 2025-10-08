@@ -1,11 +1,9 @@
 <?php
-// components/custom/reviews.list/component.php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
-// Подключаем модуль инфоблоков
 CModule::IncludeModule('iblock');
 
-// Обработка параметров
+
 $arParams['PRODUCT_ID'] = intval($arParams['PRODUCT_ID']);
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['IBLOCK_CODE'] = trim($arParams['IBLOCK_CODE']);
@@ -59,16 +57,16 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     $arResult = $cache->GetVars();
 } elseif($cache->StartDataCache()) {
     
-    // Фильтр для выборки отзывов
+  
     $filter = [
         'IBLOCK_ID' => $arResult['IBLOCK_ID'],
         'ACTIVE' => 'Y'
     ];
     
-    // Добавляем фильтр по товару
+
     $filter['PROPERTY_PRODUCT_ID'] = $arParams['PRODUCT_ID'];
     
-    // Получаем общее количество
+
     $arResult['TOTAL_COUNT'] = CIBlockElement::GetList(
         [],
         $filter,
@@ -77,12 +75,13 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     
     // Получаем отзывы
     $arSelect = [
-        'ID', 
-        'NAME', 
-        'DATE_CREATE', 
-        'PREVIEW_TEXT', 
-        'PROPERTY_USER_ID', 
-        'PROPERTY_USER_TYPE',
+        'ID',
+        'NAME',
+        'DATE_CREATE',
+        'PREVIEW_TEXT',
+        'PROPERTY_USER_ID',
+        'PROPERTY_USER_TYPE', 
+        'PROPERTY_GUEST_EMAIL',
         'PROPERTY_RATING'
     ];
     
@@ -104,12 +103,15 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     while($review = $dbReviews->GetNext()) {
         $userName = $arParams['SHOW_GUEST_NAME'];
         
-        // Определяем имя пользователя
-        if($review['PROPERTY_USER_TYPE_VALUE'] == 'authorized' && $review['PROPERTY_USER_ID_VALUE']) {
-            $user = CUser::GetByID($review['PROPERTY_USER_ID_VALUE'])->Fetch();
-            if($user) {
-                $userName = $user['NAME'] ?: $user['LOGIN'] ?: $user['EMAIL'];
+        if (isset($review['PROPERTY_USER_TYPE_VALUE']) && $review['PROPERTY_USER_TYPE_VALUE'] == 'Авторизованный') {
+            if (isset($review['PROPERTY_USER_ID_VALUE']) && $review['PROPERTY_USER_ID_VALUE']) {
+                $user = CUser::GetByID($review['PROPERTY_USER_ID_VALUE'])->Fetch();
+                if($user) {
+                    $userName = $user['NAME'] ?: $user['LOGIN'] ?: $user['EMAIL'];
+                }
             }
+        } elseif (isset($review['PROPERTY_GUEST_EMAIL_VALUE']) && $review['PROPERTY_GUEST_EMAIL_VALUE']) {
+            $userName = $arParams['SHOW_GUEST_NAME'];
         }
         
         $arResult['REVIEWS'][] = [
@@ -118,13 +120,13 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             'TEXT' => $review['PREVIEW_TEXT'],
             'DATE' => $review['DATE_CREATE'],
             'DATE_FORMATTED' => FormatDate($arParams['DATE_FORMAT'], MakeTimeStamp($review['DATE_CREATE'])),
-            'RATING' => $review['PROPERTY_RATING_VALUE']
+            'RATING' => $review['PROPERTY_RATING_VALUE'] ?? null
         ];
     }
     
     $cache->EndDataCache($arResult);
 }
 
-// Подключаем шаблон
+
 $this->IncludeComponentTemplate();
 ?>
