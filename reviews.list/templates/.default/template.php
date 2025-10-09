@@ -3,7 +3,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 $this->addExternalCss($this->GetFolder().'/style.css');
 ?>
 
-<div class="product-reviews">
+<div class="product-reviews" id="review">
     <?php if(empty($arResult['REVIEWS'])): ?>
         <p class="reviews-empty">Пока нет отзывов. Будьте первым!</p>
     <?php else: ?>

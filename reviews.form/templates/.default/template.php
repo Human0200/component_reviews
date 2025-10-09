@@ -3,6 +3,15 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 ?>
 
 <style>
+/* Контейнер для центрирования кнопки */
+.review-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+}
+
 .review-form-btn {
     background-color: <?= $arResult['BUTTON_COLOR'] ?>;
     color: white;
@@ -128,10 +137,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 }
 </style>
 
-<!-- Кнопка открытия формы -->
-<button type="button" class="review-form-btn" onclick="openReviewForm()">
-    <?= $arResult['BUTTON_TEXT'] ?>
-</button>
+<!-- Контейнер с центрированной кнопкой -->
+<div class="review-form-container">
+    <button type="button" class="review-form-btn" onclick="openReviewForm()">
+        <?= $arResult['BUTTON_TEXT'] ?>
+    </button>
+</div>
 
 <!-- Модальное окно с формой -->
 <div id="reviewModal" class="review-modal">
