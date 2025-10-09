@@ -141,61 +141,62 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
         <?php if (!empty($arResult['ERRORS'])): ?>
             <div class="errors">
                 <?php foreach ($arResult['ERRORS'] as $error): ?>
-                    <p><?= $error ?></p>
+                    <p><?= htmlspecialchars($error) ?></p>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
         
         <?php if (!empty($arResult['SUCCESS_MESSAGE'])): ?>
             <div class="success">
-                <p><?= $arResult['SUCCESS_MESSAGE'] ?></p>
+                <p><?= htmlspecialchars($arResult['SUCCESS_MESSAGE']) ?></p>
             </div>
+        <?php else: ?>
+            <!-- Форма показывается только если нет сообщения об успехе -->
+            <form class="review-form" method="POST" action="">
+                <?= bitrix_sessid_post() ?>
+                <input type="hidden" name="submit_review" value="1">
+                
+                <!-- Поле для авторизованных пользователей -->
+                <?php if ($arResult['IS_AUTHORIZED']): ?>
+                    <div class="form-group">
+                        <label>Вы авторизованы как:</label>
+                        <input type="text" value="<?= htmlspecialchars($arResult['CURRENT_USER_NAME']) ?>" readonly>
+                        <small>Отзыв будет привязан к вашему аккаунту</small>
+                    </div>
+                <?php else: ?>
+                    <!-- Поле для гостей -->
+                    <div class="form-group">
+                        <label for="guest_email">Ваш email *</label>
+                        <input type="email" id="guest_email" name="guest_email" 
+                               value="<?= htmlspecialchars($_POST['guest_email'] ?? '') ?>" 
+                               required>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Рейтинг -->
+                <div class="form-group">
+                    <label>Оценка *</label>
+                    <div class="rating-stars">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" 
+                                   <?= ($_POST['rating'] ?? '') == $i ? 'checked' : '' ?> required>
+                            <label for="star<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <!-- Текст отзыва -->
+                <div class="form-group">
+                    <label for="review_text">Текст отзыва *</label>
+                    <textarea id="review_text" name="review_text" required><?= htmlspecialchars($_POST['review_text'] ?? '') ?></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeReviewForm()">Отмена</button>
+                    <button type="submit" class="submit-btn">Отправить отзыв</button>
+                </div>
+            </form>
         <?php endif; ?>
-        
-        <form class="review-form" method="POST" action="">
-            <?= bitrix_sessid_post() ?>
-            <input type="hidden" name="submit_review" value="1">
-            
-            <!-- Поле для авторизованных пользователей -->
-            <?php if ($arResult['IS_AUTHORIZED']): ?>
-                <div class="form-group">
-                    <label>Вы авторизованы как:</label>
-                    <input type="text" value="<?= htmlspecialchars($arResult['CURRENT_USER_NAME']) ?>" readonly>
-                    <small>Отзыв будет привязан к вашему аккаунту</small>
-                </div>
-            <?php else: ?>
-                <!-- Поле для гостей -->
-                <div class="form-group">
-                    <label for="guest_email">Ваш email *</label>
-                    <input type="email" id="guest_email" name="guest_email" 
-                           value="<?= htmlspecialchars($_POST['guest_email'] ?? '') ?>" 
-                           required>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Рейтинг -->
-            <div class="form-group">
-                <label>Оценка *</label>
-                <div class="rating-stars">
-                    <?php for ($i = 5; $i >= 1; $i--): ?>
-                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" 
-                               <?= ($_POST['rating'] ?? '') == $i ? 'checked' : '' ?>>
-                        <label for="star<?= $i ?>">★</label>
-                    <?php endfor; ?>
-                </div>
-            </div>
-            
-            <!-- Текст отзыва -->
-            <div class="form-group">
-                <label for="review_text">Текст отзыва *</label>
-                <textarea id="review_text" name="review_text" required><?= htmlspecialchars($_POST['review_text'] ?? '') ?></textarea>
-            </div>
-            
-            <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="closeReviewForm()">Отмена</button>
-                <button type="submit" class="submit-btn">Отправить отзыв</button>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -206,7 +207,33 @@ function openReviewForm() {
 
 function closeReviewForm() {
     document.getElementById('reviewModal').style.display = 'none';
+    
+    // Очищаем GET-параметр review_success из URL
+    if (window.location.search.includes('review_success')) {
+        const url = new URL(window.location);
+        url.searchParams.delete('review_success');
+        window.history.replaceState({}, '', url);
+    }
 }
+
+// Автоматически открываем модальное окно если есть ошибки
+<?php if (!empty($arResult['ERRORS'])): ?>
+    window.addEventListener('DOMContentLoaded', function() {
+        openReviewForm();
+    });
+<?php endif; ?>
+
+// Автоматически открываем модальное окно если есть сообщение об успехе
+<?php if (!empty($arResult['SUCCESS_MESSAGE'])): ?>
+    window.addEventListener('DOMContentLoaded', function() {
+        openReviewForm();
+        
+        // Автоматически закрываем через 3 секунды и очищаем URL
+        setTimeout(function() {
+            closeReviewForm();
+        }, 3000);
+    });
+<?php endif; ?>
 
 // Закрытие модального окна при клике вне его
 window.onclick = function(event) {

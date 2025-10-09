@@ -11,6 +11,9 @@ $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['IBLOCK_TYPE'] = trim($arParams['IBLOCK_TYPE']) ?: 'reviews';
 $arParams['BUTTON_TEXT'] = trim($arParams['BUTTON_TEXT']) ?: 'Написать отзыв';
 $arParams['BUTTON_COLOR'] = trim($arParams['BUTTON_COLOR']) ?: '#BF1E77';
+$arParams['CHECK_DUPLICATE'] = $arParams['CHECK_DUPLICATE'] !== 'N' ? 'Y' : 'N';
+$arParams['CHECK_TIME_LIMIT'] = $arParams['CHECK_TIME_LIMIT'] !== 'N' ? 'Y' : 'N';
+$arParams['TIME_LIMIT_MINUTES'] = intval($arParams['TIME_LIMIT_MINUTES']) ?: 5;
 
 // Проверка авторизации пользователя
 global $USER;
@@ -34,9 +37,81 @@ function getUserTypeValue($isAuthorized) {
     }
 }
 
+// Функция проверки существующих отзывов
+function checkExistingReview(&$arParams, &$arResult, $guestEmail = null) {
+    $filter = [
+        "IBLOCK_ID" => $arParams['IBLOCK_ID'],
+        "ACTIVE" => "Y",
+        "PROPERTY_PRODUCT_ID" => $arParams['PRODUCT_ID'],
+    ];
+    
+    // Для авторизованных пользователей проверяем по USER_ID
+    if ($arResult['IS_AUTHORIZED']) {
+        $filter["PROPERTY_USER_ID"] = $arResult['CURRENT_USER_ID'];
+    } else {
+        // Для гостей проверяем по email
+        $filter["PROPERTY_GUEST_EMAIL"] = $guestEmail;
+    }
+    
+    $res = CIBlockElement::GetList(
+        [],
+        $filter,
+        false,
+        false,
+        ["ID", "DATE_CREATE"]
+    );
+    
+    if ($review = $res->Fetch()) {
+        return [
+            'exists' => true,
+            'review_id' => $review['ID'],
+            'date' => $review['DATE_CREATE']
+        ];
+    }
+    
+    return ['exists' => false];
+}
+
+// Функция проверки временного интервала (защита от частых отзывов)
+function checkReviewTimeLimit(&$arParams, &$arResult, $guestEmail = null) {
+    $timeLimit = 300; // 5 минут между отзывами (можно настроить)
+    
+    $filter = [
+        "IBLOCK_ID" => $arParams['IBLOCK_ID'],
+        "ACTIVE" => "Y",
+        ">=DATE_CREATE" => ConvertTimeStamp(time() - $timeLimit, "FULL")
+    ];
+    
+    // Фильтр по пользователю
+    if ($arResult['IS_AUTHORIZED']) {
+        $filter["PROPERTY_USER_ID"] = $arResult['CURRENT_USER_ID'];
+    } else {
+        $filter["PROPERTY_GUEST_EMAIL"] = $guestEmail;
+    }
+    
+    $res = CIBlockElement::GetList(
+        ["DATE_CREATE" => "DESC"],
+        $filter,
+        false,
+        false,
+        ["ID", "DATE_CREATE"]
+    );
+    
+    if ($recent = $res->Fetch()) {
+        $timePassed = time() - MakeTimeStamp($recent['DATE_CREATE']);
+        $timeLeft = ceil(($timeLimit - $timePassed) / 60);
+        return [
+            'too_soon' => true,
+            'minutes_left' => $timeLeft
+        ];
+    }
+    
+    return ['too_soon' => false];
+}
+
 // Функция обработки формы
 function processReviewForm(&$arParams, &$arResult) {
-    global $USER;
+    global $USER, $APPLICATION;
     
     $errors = [];
     $fields = [];
@@ -57,6 +132,33 @@ function processReviewForm(&$arParams, &$arResult) {
         $fields['GUEST_EMAIL'] = trim($_POST['guest_email']);
         if (empty($fields['GUEST_EMAIL']) || !check_email($fields['GUEST_EMAIL'])) {
             $errors[] = 'Введите корректный email';
+        }
+    }
+    
+    // Проверка на существующий отзыв к этому товару
+    if (empty($errors)) {
+        $existingCheck = checkExistingReview(
+            $arParams, 
+            $arResult, 
+            $fields['GUEST_EMAIL'] ?? null
+        );
+        
+        if ($existingCheck['exists']) {
+            $errors[] = 'Вы уже оставили отзыв на этот товар';
+        }
+    }
+    
+    // Проверка на частоту отзывов (защита от спама)
+    if (empty($errors)) {
+        $timeCheck = checkReviewTimeLimit(
+            $arParams, 
+            $arResult, 
+            $fields['GUEST_EMAIL'] ?? null
+        );
+        
+        if ($timeCheck['too_soon']) {
+            $errors[] = 'Пожалуйста, подождите ' . $timeCheck['minutes_left'] . 
+                       ' мин. перед отправкой следующего отзыва';
         }
     }
     
@@ -88,9 +190,13 @@ function processReviewForm(&$arParams, &$arResult) {
         $arLoadProductArray["PROPERTY_VALUES"] = $propertyValues;
         
         if ($PRODUCT_ID = $el->Add($arLoadProductArray)) {
-            $arResult['SUCCESS_MESSAGE'] = 'Отзыв успешно добавлен!';
-            // Очищаем POST чтобы форма не показывала введенные данные
-            unset($_POST);
+            // Сбрасываем кеш инфоблока
+            if (defined('BX_COMP_MANAGED_CACHE')) {
+                $GLOBALS["CACHE_MANAGER"]->ClearByTag("iblock_id_" . $arParams['IBLOCK_ID']);
+            }
+            
+            // Редирект методом PRG (Post-Redirect-Get) для предотвращения повторной отправки
+            LocalRedirect($APPLICATION->GetCurPageParam("review_success=Y", ["review_success"]));
         } else {
             $errors[] = 'Ошибка при сохранении отзыва: ' . $el->LAST_ERROR;
         }
@@ -104,6 +210,11 @@ function processReviewForm(&$arParams, &$arResult) {
 // Обработка отправки формы
 if ($_POST['submit_review'] && check_bitrix_sessid()) {
     processReviewForm($arParams, $arResult);
+}
+
+// Проверка успешного добавления после редиректа
+if ($_GET['review_success'] === 'Y') {
+    $arResult['SUCCESS_MESSAGE'] = 'Отзыв успешно добавлен!';
 }
 
 // Передаем параметры в шаблон

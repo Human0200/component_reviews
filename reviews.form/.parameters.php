@@ -33,7 +33,30 @@ $arComponentParameters = [
             "TYPE" => "STRING",
             "DEFAULT" => "#BF1E77",
         ],
+        "CHECK_DUPLICATE" => [
+            "PARENT" => "ADDITIONAL_SETTINGS",
+            "NAME" => "Проверять дубликаты отзывов",
+            "TYPE" => "CHECKBOX",
+            "DEFAULT" => "Y",
+        ],
+        "CHECK_TIME_LIMIT" => [
+            "PARENT" => "ADDITIONAL_SETTINGS",
+            "NAME" => "Ограничить частоту отзывов",
+            "TYPE" => "CHECKBOX",
+            "DEFAULT" => "Y",
+        ],
+        "TIME_LIMIT_MINUTES" => [
+            "PARENT" => "ADDITIONAL_SETTINGS",
+            "NAME" => "Интервал между отзывами (минут)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "5",
+        ],
         "CACHE_TIME" => ["DEFAULT" => 3600],
+    ],
+    "GROUPS" => [
+        "ADDITIONAL_SETTINGS" => [
+            "NAME" => "Настройки защиты от спама",
+        ],
     ],
 ];
 ?>
