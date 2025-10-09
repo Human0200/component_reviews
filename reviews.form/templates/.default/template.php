@@ -1,161 +1,132 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
-
-// CSS стили
-$style = "
-    .review-form-btn {
-        background-color: {$arResult['BUTTON_COLOR']};
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
-        transition: background-color 0.3s;
-    }
-    
-    .review-form-btn:hover {
-        background-color: #9a165c;
-    }
-    
-    .review-modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-    }
-    
-    .review-modal-content {
-        background-color: white;
-        margin: 5% auto;
-        padding: 30px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 600px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    .review-form .form-group {
-        margin-bottom: 20px;
-    }
-    
-    .review-form label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
-    
-    .review-form input,
-    .review-form textarea,
-    .review-form select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-    
-    .review-form textarea {
-        height: 120px;
-        resize: vertical;
-    }
-    
-    .rating-stars {
-        display: flex;
-        gap: 10px;
-        margin: 10px 0;
-    }
-    
-    .rating-stars input {
-        display: none;
-    }
-    
-    .rating-stars label {
-        font-size: 24px;
-        color: #ddd;
-        cursor: pointer;
-    }
-    
-    .rating-stars input:checked ~ label,
-    .rating-stars label:hover,
-    .rating-stars label:hover ~ label {
-        color: #ffc107;
-    }
-    
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        margin-top: 20px;
-    }
-    
-    .cancel-btn {
-        background-color: #6c757d;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    
-    .submit-btn {
-        background-color: {$arResult['BUTTON_COLOR']};
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    
-    .errors {
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 10px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-    
-    .success {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 10px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-";
-
-// JavaScript для работы модального окна
-$script = "
-    <script>
-        function openReviewForm() {
-            document.getElementById('reviewModal').style.display = 'block';
-        }
-        
-        function closeReviewForm() {
-            document.getElementById('reviewModal').style.display = 'none';
-        }
-        
-        // Закрытие модального окна при клике вне его
-        window.onclick = function(event) {
-            var modal = document.getElementById('reviewModal');
-            if (event.target == modal) {
-                closeReviewForm();
-            }
-        }
-        
-        // Обработка рейтинга
-        function setRating(rating) {
-            document.getElementById('rating').value = rating;
-            // Можно добавить визуальное выделение выбранных звезд
-        }
-    </script>
-";
 ?>
+
+<style>
+.review-form-btn {
+    background-color: <?= $arResult['BUTTON_COLOR'] ?>;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.review-form-btn:hover {
+    background-color: #9a165c;
+}
+
+.review-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.review-modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.review-form .form-group {
+    margin-bottom: 20px;
+}
+
+.review-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.review-form input,
+.review-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.review-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.rating-stars input {
+    display: none;
+}
+
+.rating-stars label {
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.rating-stars input:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background-color: <?= $arResult['BUTTON_COLOR'] ?>;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.errors {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+</style>
 
 <!-- Кнопка открытия формы -->
 <button type="button" class="review-form-btn" onclick="openReviewForm()">
@@ -208,12 +179,10 @@ $script = "
                 <div class="rating-stars">
                     <?php for ($i = 5; $i >= 1; $i--): ?>
                         <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" 
-                               <?= ($_POST['rating'] ?? '') == $i ? 'checked' : '' ?> 
-                               onchange="setRating(<?= $i ?>)">
+                               <?= ($_POST['rating'] ?? '') == $i ? 'checked' : '' ?>>
                         <label for="star<?= $i ?>">★</label>
                     <?php endfor; ?>
                 </div>
-                <input type="hidden" id="rating" name="rating" value="<?= $_POST['rating'] ?? '' ?>">
             </div>
             
             <!-- Текст отзыва -->
@@ -230,5 +199,20 @@ $script = "
     </div>
 </div>
 
-<style><?= $style ?></style>
-<?= $script ?>
+<script>
+function openReviewForm() {
+    document.getElementById('reviewModal').style.display = 'block';
+}
+
+function closeReviewForm() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+
+// Закрытие модального окна при клике вне его
+window.onclick = function(event) {
+    var modal = document.getElementById('reviewModal');
+    if (event.target == modal) {
+        closeReviewForm();
+    }
+}
+</script>
