@@ -1,4 +1,6 @@
 <?php
+define('NO_KEEP_STATISTIC', true);
+define('NOT_CHECK_PERMISSIONS', true);
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
 // Подключаем модули
@@ -195,8 +197,8 @@ function processReviewForm(&$arParams, &$arResult) {
                 $GLOBALS["CACHE_MANAGER"]->ClearByTag("iblock_id_" . $arParams['IBLOCK_ID']);
             }
             
-            // Редирект методом PRG (Post-Redirect-Get) для предотвращения повторной отправки
-            LocalRedirect($APPLICATION->GetCurPageParam("review_success=Y", ["review_success"]));
+            $arResult['SUCCESS_MESSAGE'] = 'Отзыв успешно добавлен!';
+            return true;
         } else {
             $errors[] = 'Ошибка при сохранении отзыва: ' . $el->LAST_ERROR;
         }
@@ -205,14 +207,55 @@ function processReviewForm(&$arParams, &$arResult) {
     if (!empty($errors)) {
         $arResult['ERRORS'] = $errors;
     }
+    
+    return false;
 }
 
 // Обработка отправки формы
 if ($_POST['submit_review'] && check_bitrix_sessid()) {
-    processReviewForm($arParams, $arResult);
+    
+    // Обрабатываем форму
+    $success = processReviewForm($arParams, $arResult);
+    
+    // Если это AJAX запрос, выводим JSON ответ и завершаем выполнение
+    if ($_POST['ajax'] === 'Y' || $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+        
+        // Логируем для отладки
+        AddMessage2Log("AJAX review form submission. Success: " . ($success ? 'true' : 'false'), "review_form");
+        
+        if ($success) {
+            // Успешная отправка
+            echo '<div class="success">';
+            echo '<p>' . htmlspecialchars($arResult['SUCCESS_MESSAGE']) . '</p>';
+            echo '</div>';
+        } elseif (!empty($arResult['ERRORS'])) {
+            // Есть ошибки
+            echo '<div class="errors">';
+            foreach ($arResult['ERRORS'] as $error) {
+                echo '<p>' . htmlspecialchars($error) . '</p>';
+            }
+            echo '</div>';
+            
+            // Логируем ошибки
+            AddMessage2Log("Review form errors: " . implode(", ", $arResult['ERRORS']), "review_form");
+        } else {
+            // Неизвестная ошибка
+            echo '<div class="errors"><p>Произошла неизвестная ошибка</p></div>';
+            AddMessage2Log("Review form unknown error", "review_form");
+        }
+        
+        // Завершаем выполнение для AJAX
+        CMain::FinalActions();
+        die();
+    } else {
+        // Обычная отправка формы (не AJAX) - редирект
+        if ($success) {
+            LocalRedirect($APPLICATION->GetCurPageParam("review_success=Y", ["review_success"]));
+        }
+    }
 }
 
-// Проверка успешного добавления после редиректа
+// Проверка успешного добавления после редиректа (для не-AJAX)
 if ($_GET['review_success'] === 'Y') {
     $arResult['SUCCESS_MESSAGE'] = 'Отзыв успешно добавлен!';
 }
