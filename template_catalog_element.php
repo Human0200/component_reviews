@@ -1509,6 +1509,9 @@ $isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEB
 
 
     </div>
+	<link rel="stylesheet" href="/local/components/leadspace/reviews.form/templates/.default/style.css">
+	<link rel="stylesheet" href="/local/components/leadspace/reviews.list/templates/.default/style.css">
+
 	<section class="section__review">
 					<div class="container pt-4">
 						<?$APPLICATION->IncludeComponent(
