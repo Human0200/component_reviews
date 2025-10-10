@@ -1,17 +1,15 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
-?>
 
+// Получаем путь к ajax.php
+$componentPath = '/local/components/leadspace/reviews.form/ajax.php';
+
+
+?>
+<!-- подключаем стили -->
+<link rel="stylesheet" href="style.css">
 <style>
 /* Контейнер для центрирования кнопки */
-.review-form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 20px 0;
-}
-
 .review-form-btn {
     background-color: <?= $arResult['BUTTON_COLOR'] ?>;
     color: white;
@@ -23,104 +21,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
     font-weight: 500;
     transition: background-color 0.3s;
 }
-
-.review-form-btn:hover {
-    background-color: #9a165c;
-}
-
-.review-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.review-modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    position: relative;
-}
-
-.review-form .form-group {
-    margin-bottom: 20px;
-}
-
-.review-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.review-form input,
-.review-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.review-form textarea {
-    height: 120px;
-    resize: vertical;
-}
-
-.rating-stars {
-    display: flex;
-    gap: 10px;
-    margin: 10px 0;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-}
-
-.rating-stars input {
-    display: none;
-}
-
-.rating-stars label {
-    font-size: 24px;
-    color: #ddd;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.rating-stars input:checked ~ label,
-.rating-stars label:hover,
-.rating-stars label:hover ~ label {
-    color: #ffc107;
-}
-
-.form-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-.cancel-btn {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.cancel-btn:hover {
-    background-color: #5a6268;
-}
-
 .submit-btn {
     background-color: <?= $arResult['BUTTON_COLOR'] ?>;
     color: white;
@@ -130,87 +30,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
-}
-
-.submit-btn:hover:not(:disabled) {
-    background-color: #9a165c;
-}
-
-.submit-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.errors {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    border: 1px solid #f5c6cb;
-}
-
-.errors p {
-    margin: 0 0 5px 0;
-}
-
-.errors p:last-child {
-    margin-bottom: 0;
-}
-
-.success {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 20px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    border: 1px solid #c3e6cb;
-    text-align: center;
-    font-weight: 500;
-}
-
-.loading-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #ffffff;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #6c757d;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.close-btn:hover {
-    background-color: #f8f9fa;
-    color: #495057;
 }
 </style>
 
@@ -231,8 +50,13 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
         
         <form class="review-form" id="reviewForm" method="POST">
             <?= bitrix_sessid_post() ?>
-            <input type="hidden" name="submit_review" value="1">
-            <input type="hidden" name="ajax" value="Y">
+            
+            <!-- Скрытые поля с параметрами -->
+            <input type="hidden" name="product_id" value="<?= $arResult['PRODUCT_ID'] ?>">
+            <input type="hidden" name="iblock_id" value="<?= $arParams['IBLOCK_ID'] ?>">
+            <input type="hidden" name="check_duplicate" value="<?= $arParams['CHECK_DUPLICATE'] ?>">
+            <input type="hidden" name="check_time_limit" value="<?= $arParams['CHECK_TIME_LIMIT'] ?>">
+            <input type="hidden" name="time_limit_minutes" value="<?= $arParams['TIME_LIMIT_MINUTES'] ?>">
             
             <!-- Поле для авторизованных пользователей -->
             <?php if ($arResult['IS_AUTHORIZED']): ?>
@@ -246,7 +70,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
                 <div class="form-group">
                     <label for="guest_email">Ваш email *</label>
                     <input type="email" id="guest_email" name="guest_email" 
-                           value="<?= htmlspecialchars($_POST['guest_email'] ?? '') ?>" 
                            required
                            placeholder="example@mail.ru">
                 </div>
@@ -257,8 +80,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
                 <label>Оценка *</label>
                 <div class="rating-stars">
                     <?php for ($i = 5; $i >= 1; $i--): ?>
-                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" 
-                               <?= ($_POST['rating'] ?? '') == $i ? 'checked' : '' ?> required>
+                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
                         <label for="star<?= $i ?>" title="<?= $i ?> звезд">★</label>
                     <?php endfor; ?>
                 </div>
@@ -269,7 +91,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
             <div class="form-group">
                 <label for="review_text">Текст отзыва *</label>
                 <textarea id="review_text" name="review_text" required 
-                          placeholder="Поделитесь вашим мнением о товаре..."><?= htmlspecialchars($_POST['review_text'] ?? '') ?></textarea>
+                          placeholder="Поделитесь вашим мнением о товаре..."></textarea>
             </div>
             
             <div class="form-actions">
@@ -286,31 +108,22 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 <script>
 // Глобальные переменные
 let isSubmitting = false;
+const AJAX_URL = '<?= $componentPath ?>';
 
 function openReviewForm() {
     console.log('Opening review form');
     document.getElementById('reviewModal').style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
-    
-    // Очищаем сообщения при открытии
+    document.body.style.overflow = 'hidden';
     document.getElementById('formMessages').innerHTML = '';
-    
-    // Показываем форму (на случай если она была скрыта после успеха)
     document.getElementById('reviewForm').style.display = 'block';
-    
-    // Сбрасываем состояние кнопки
     setLoadingState(false);
 }
 
 function closeReviewForm() {
     console.log('Closing review form');
     document.getElementById('reviewModal').style.display = 'none';
-    document.body.style.overflow = ''; // Восстанавливаем скролл
-    
-    // Сбрасываем форму при закрытии
+    document.body.style.overflow = '';
     document.getElementById('reviewForm').reset();
-    
-    // Сбрасываем состояние
     isSubmitting = false;
     setLoadingState(false);
 }
@@ -318,10 +131,7 @@ function closeReviewForm() {
 function showMessage(type, message) {
     const messagesDiv = document.getElementById('formMessages');
     const className = type === 'success' ? 'success' : 'errors';
-    
     messagesDiv.innerHTML = `<div class="${className}">${message}</div>`;
-    
-    // Прокручиваем к сообщению
     messagesDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -359,7 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            console.log('Form submission started');
+            //console.log('Form submission started');
+            //console.log('AJAX URL:', AJAX_URL);
             setLoadingState(true);
             
             // Собираем данные формы
@@ -371,8 +182,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(pair[0] + ': ' + pair[1]);
             }
             
-            // Отправляем AJAX запрос
-            fetch('', {
+            // Отправляем AJAX запрос на отдельный файл
+            fetch(AJAX_URL, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -449,29 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Автоматически открываем модальное окно если есть ошибки (для совместимости с обычной отправкой)
-<?php if (!empty($arResult['ERRORS'])): ?>
-    window.addEventListener('DOMContentLoaded', function() {
-        console.log('Auto-opening form with errors:', <?= json_encode($arResult['ERRORS']) ?>);
-        openReviewForm();
-        showMessage('error', `<?php foreach ($arResult['ERRORS'] as $error): ?><p><?= htmlspecialchars($error) ?></p><?php endforeach; ?>`);
-    });
-<?php endif; ?>
-
-// Автоматически открываем модальное окно если есть сообщение об успехе (для совместимости с обычной отправкой)
-<?php if (!empty($arResult['SUCCESS_MESSAGE'])): ?>
-    window.addEventListener('DOMContentLoaded', function() {
-        console.log('Auto-opening form with success message');
-        openReviewForm();
-        showMessage('success', '<p><?= htmlspecialchars($arResult['SUCCESS_MESSAGE']) ?></p>');
-        document.getElementById('reviewForm').style.display = 'none';
-        
-        setTimeout(() => {
-            closeReviewForm();
-        }, 3000);
-    });
-<?php endif; ?>
-
 // Закрытие модального окна при клике вне его
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('reviewModal');
@@ -492,6 +280,6 @@ document.querySelector('.review-modal-content').addEventListener('click', functi
     event.stopPropagation();
 });
 
-// Дополнительная отладка - логируем события открытия/закрытия
-console.log('Review form script loaded');
+//console.log('Review form script loaded');
+//console.log('AJAX handler URL:', AJAX_URL);
 </script>
