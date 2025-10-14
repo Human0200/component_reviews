@@ -5,7 +5,9 @@ CModule::IncludeModule('iblock');
 
 // Обработка параметров
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
-$arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;
+$arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;  
+$arParams['TITLE'] = trim($arParams['TITLE']) ?: 'Шаги';
+
 
 if(!$arParams['IBLOCK_ID']) {
     ShowError('Не указан ID инфоблока');
@@ -43,6 +45,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         false,
         $arSelect
     );
+
+    $arResult['TITLE'] = $arParams['TITLE'];
     
     $arResult['ITEMS'] = [];
     $counter = 1;

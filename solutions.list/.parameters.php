@@ -13,6 +13,12 @@ $arComponentParameters = [
         "CACHE_TIME" => [
             "DEFAULT" => 3600,
         ],
+        "TITLE" => [
+            "PARENT" => "BASE",
+            "NAME" => "Заголовок",
+            "TYPE" => "STRING",
+            "DEFAULT" => "",
+        ],
     ],
 ];
 ?>

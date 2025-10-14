@@ -6,7 +6,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
     <div class="container-fluid">
         <div class="individual__head">
             <hr class="individual__line">
-            <h2 class="individual__title">Индивидуальное внедрение</h2>
+            <h2 class="individual__title"><?=$arResult['TITLE']?></h2>
             <p class="individual__text">Автоматизируем бизнес под ваши потребности <b>за <?=count($arResult['ITEMS'])?> шагов</b>
             </p>
             <hr class="individual__line">

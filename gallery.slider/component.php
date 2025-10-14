@@ -7,7 +7,7 @@ CModule::IncludeModule('iblock');
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;
 
-$arParams['TITLE'] = trim($arParams['TITLE']) ?: 'Решения';
+$arParams['TITLE'] = trim($arParams['TITLE']) ?: 'Сертификаты';
 
 
 if(!$arParams['IBLOCK_ID']) {
@@ -17,8 +17,8 @@ if(!$arParams['IBLOCK_ID']) {
 
 // Кеширование
 $cache = new CPHPCache();
-$cache_id = 'solutions_list_'.$arParams['IBLOCK_ID'];
-$cache_path = '/solutions/list/';
+$cache_id = 'gallery_list_'.$arParams['IBLOCK_ID'];
+$cache_path = '/gallery/list/';
 
 if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $cache_id, $cache_path)) {
     $arResult = $cache->GetVars();
@@ -37,8 +37,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'DETAIL_PAGE_URL',
         'PREVIEW_PICTURE',
         'DETAIL_PICTURE',
-        'PROPERTY_CLIENTS_COUNT',
-        'PROPERTY_IMAGE'
+        'PROPERTY_IMAGE',
+        'PROPERTY_DATE'
     ];
     
     // Параметры навигации
@@ -57,6 +57,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     $arResult['ITEMS'] = [];
     
     while($element = $dbElements->GetNext()) {
+        $date = new DateTime($element['PROPERTY_DATE_VALUE']);
+        $element['DATE'] = $date->format('d.m.Y');
         // Получаем картинку
         $image = '';
         if($element['PROPERTY_IMAGE_VALUE']) {
@@ -67,15 +69,13 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             $image = CFile::GetPath($element['PREVIEW_PICTURE']);
         }
         
-        // Количество клиентов
-        $clientsCount = $element['PROPERTY_CLIENTS_COUNT_VALUE'] ?: '11';
         
         $arResult['ITEMS'][] = [
             'ID' => $element['ID'],
             'NAME' => $element['NAME'],
             'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
             'IMAGE' => $image,
-            'CLIENTS_COUNT' => $clientsCount
+            'DATE' => $element['DATE']
         ];
     }
     

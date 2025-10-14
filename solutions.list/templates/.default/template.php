@@ -5,7 +5,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 <section class="solutions" id="solutions">
     <div class="container-fluid">
         <div class="solutions__head">
-            <h2 class="solutions__title">Готовое решение CRM&nbsp;и&nbsp;сайт</h2>
+            <h2 class="solutions__title"><?=$arResult['TITLE']?></h2>
             <p class="solutions__text">
                 <small>Уже пользуются:</small> 150+ клиентов
             </p>
