@@ -59,10 +59,10 @@
 
 .rating-stars {
     display: flex;
-    gap: 10px;
-    margin: 10px 0;
     flex-direction: row-reverse;
     justify-content: flex-end;
+    gap: 5px;
+    margin: 10px 0;
 }
 
 .rating-stars input {
@@ -70,15 +70,30 @@
 }
 
 .rating-stars label {
-    font-size: 24px;
+    font-size: 32px;
     color: #ddd;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.rating-stars input:checked ~ label,
+/* Подсветка выбранной звезды и всех слева от нее */
+.rating-stars input:checked ~ label {
+    color: #ffc107;
+}
+
+/* Подсветка при наведении */
 .rating-stars label:hover,
 .rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+
+/* Сохраняем выбранное значение при наведении на другие звезды */
+.rating-stars input:checked ~ label {
     color: #ffc107;
 }
 

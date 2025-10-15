@@ -76,16 +76,16 @@ $componentPath = '/local/components/leadspace/reviews.form/ajax.php';
             <?php endif; ?>
             
             <!-- Рейтинг -->
-            <div class="form-group">
-                <label>Оценка *</label>
-                <div class="rating-stars">
-                    <?php for ($i = 5; $i >= 1; $i--): ?>
-                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
-                        <label for="star<?= $i ?>" title="<?= $i ?> звезд">★</label>
-                    <?php endfor; ?>
-                </div>
-                <small style="color: #6c757d; font-size: 12px;">Выберите оценку от 1 до 5 звезд</small>
-            </div>
+<div class="form-group">
+    <label>Оценка *</label>
+    <div class="rating-stars">
+        <?php for ($i = 5; $i >= 1; $i--): ?>
+            <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
+            <label for="star<?= $i ?>" title="<?= $i ?> звезд">★</label>
+        <?php endfor; ?>
+    </div>
+    <small style="color: #6c757d; font-size: 12px;">Выберите оценку от 1 до 5 звезд</small>
+</div>
             
             <!-- Текст отзыва -->
             <div class="form-group">
