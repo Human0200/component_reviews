@@ -124,7 +124,7 @@ if (empty($errors)) {
         "MODIFIED_BY" => $isAuthorized ? $currentUserId : 1,
         "IBLOCK_ID" => $iblockId,
         "NAME" => $reviewName,
-        "ACTIVE" => "Y",
+        "ACTIVE" => "N",
         "PREVIEW_TEXT" => $reviewText,
         "PROPERTY_VALUES" => [
             "PRODUCT_ID" => $productId,
