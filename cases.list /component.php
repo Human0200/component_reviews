@@ -16,9 +16,9 @@ $arParams['SECTION_MARK'] = trim($arParams['SECTION_MARK']) ?: 'Кейсы';
 $arParams['SECTION_TITLE'] = trim($arParams['SECTION_TITLE']) ?: 'Мы работали и работаем';
 $arParams['SECTION_TEXT'] = trim($arParams['SECTION_TEXT']) ?: 'Мы собрали весь наш опыт и подробно описали его, чтобы вы могли оценить наши возможности.';
 $arParams['COUNTER_NUMBER'] = trim($arParams['COUNTER_NUMBER']) ?: '300+';
-$arParams['COUNTER_TEXT'] = trim($arParams['COUNTER_TEXT']) ?: "Умпешного внедрения\nCRM-системы в разные ниши";
-$arParams['TAGLINE_ROW_1'] = trim($arParams['TAGLINE_ROW_1']) ?: "Эти кейсы — лишь малая\nчасть того";
-$arParams['TAGLINE_ROW_2'] = trim($arParams['TAGLINE_ROW_2']) ?: "что мы можем\nпродемонстрировать";
+$arParams['COUNTER_TEXT'] = str_replace('\n', "\n", trim($arParams['COUNTER_TEXT']) ?: "Успешного внедрения\nCRM-системы в разные ниши");
+$arParams['TAGLINE_ROW_1'] = str_replace('\n', "\n", trim($arParams['TAGLINE_ROW_1']) ?: "Эти кейсы — лишь малая\nчасть того");
+$arParams['TAGLINE_ROW_2'] = str_replace('\n', "\n", trim($arParams['TAGLINE_ROW_2']) ?: "что мы можем\nпродемонстрировать");
 $arParams['MARQUEE_TEXT'] = trim($arParams['MARQUEE_TEXT']) ?: 'О компании';
 $arParams['SHOW_TAGS'] = $arParams['SHOW_TAGS'] === 'Y';
 
