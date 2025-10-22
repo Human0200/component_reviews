@@ -11,10 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 
-if (!check_bitrix_sessid()) {
-    echo '<div class="errors"><p>Неверная сессия. Обновите страницу.</p></div>';
-    die();
-}
+// if (!check_bitrix_sessid()) {
+//     echo '<div class="errors"><p>Неверная сессия. Обновите страницу.</p></div>';
+//     die();
+// }
 
 
 CModule::IncludeModule('iblock');
