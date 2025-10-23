@@ -35,56 +35,56 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     function getLicenses($iblockId) {
         if(!$iblockId) return [];
         
-        $arSelect = [
-            'ID',
-            'NAME',
-            'PROPERTY_DESCRIPTION',
-            'PROPERTY_EMPLOYEES',
-            'PROPERTY_PRICE_MONTH',
-            'PROPERTY_PRICE_YEAR',
-            'PROPERTY_DISCOUNT',
-            'PROPERTY_FEATURES',
-            'PROPERTY_FEATURES_DISABLED',
-            'PROPERTY_TYPE'
-        ];
-        
         $arFilter = [
             'IBLOCK_ID' => $iblockId,
             'ACTIVE' => 'Y'
         ];
         
+        // Получаем элементы
         $dbElements = CIBlockElement::GetList(
-            ['SORT' => 'ASC', 'NAME' => 'ASC'],
+            ['SORT' => 'ASC', 'ID' => 'ASC'],
             $arFilter,
             false,
             false,
-            $arSelect
+            ['ID', 'NAME', 'IBLOCK_ID']
         );
         
         $items = [];
-        while($element = $dbElements->GetNextElement()) {
-            $arFields = $element->GetFields();
-            $arProps = $element->GetProperties();
+        
+        while($obElement = $dbElements->GetNextElement()) {
+            $arFields = $obElement->GetFields();
+            $arProps = $obElement->GetProperties();
             
-            // Рассчитываем цену со скидкой
+            // Получаем базовые цены
             $priceMonth = floatval($arProps['PRICE_MONTH']['VALUE']);
             $priceYear = floatval($arProps['PRICE_YEAR']['VALUE']);
             $discount = intval($arProps['DISCOUNT']['VALUE']);
             
+            // АВТОМАТИЧЕСКИЙ РАСЧЕТ цены со скидкой
             $priceYearDiscounted = $priceYear;
-            if($discount > 0) {
+            if($discount > 0 && $priceYear > 0) {
                 $priceYearDiscounted = $priceYear * (1 - $discount / 100);
             }
             
-            // Обработка списка функций
+            // АВТОМАТИЧЕСКИЙ РАСЧЕТ цены в месяц из годовой цены
+            // Если цена в месяц не указана, рассчитываем из годовой
+            if($priceMonth == 0 && $priceYear > 0) {
+                $priceMonth = round($priceYear / 12);
+            }
+            
+            // Обработка списка функций (множественное свойство)
             $features = [];
-            if(is_array($arProps['FEATURES']['VALUE'])) {
-                $features = $arProps['FEATURES']['VALUE'];
+            if(!empty($arProps['FEATURES']['VALUE'])) {
+                $features = is_array($arProps['FEATURES']['VALUE']) 
+                    ? $arProps['FEATURES']['VALUE'] 
+                    : [$arProps['FEATURES']['VALUE']];
             }
             
             $featuresDisabled = [];
-            if(is_array($arProps['FEATURES_DISABLED']['VALUE'])) {
-                $featuresDisabled = $arProps['FEATURES_DISABLED']['VALUE'];
+            if(!empty($arProps['FEATURES_DISABLED']['VALUE'])) {
+                $featuresDisabled = is_array($arProps['FEATURES_DISABLED']['VALUE']) 
+                    ? $arProps['FEATURES_DISABLED']['VALUE'] 
+                    : [$arProps['FEATURES_DISABLED']['VALUE']];
             }
             
             $items[] = [
@@ -113,6 +113,23 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     
     // Получаем подписки
     $arResult['SUBSCRIPTIONS'] = getLicenses($arParams['IBLOCK_ID_SUBSCRIPTION']);
+    
+    // Формируем варианты цен для карточки Энтерпрайз
+    $arResult['ENTERPRISE_OPTIONS'] = [];
+    
+    for($i = 1; $i <= 3; $i++) {
+        $employees = trim($arParams['ENTERPRISE_OPTION_'.$i.'_EMPLOYEES']);
+        $priceMonth = intval($arParams['ENTERPRISE_OPTION_'.$i.'_PRICE_MONTH']);
+        $priceYear = intval($arParams['ENTERPRISE_OPTION_'.$i.'_PRICE_YEAR']);
+        
+        if($employees && $priceMonth && $priceYear) {
+            $arResult['ENTERPRISE_OPTIONS'][] = [
+                'EMPLOYEES' => $employees,
+                'PRICE_MONTH' => number_format($priceMonth, 0, '', ' ') . ' ₽/мес.',
+                'PRICE_YEAR' => number_format($priceYear, 0, '', ' ') . ' ₽/год'
+            ];
+        }
+    }
     
     $cache->EndDataCache($arResult);
 }

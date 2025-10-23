@@ -48,21 +48,26 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                             <div class="license__swiper">
                                 <div class="swiper js-swiper-license">
                                     <div class="swiper-wrapper">
-                                        <?php foreach($arResult['CLOUD_LICENSES'] as $license): ?>
+                                        <?php foreach($arResult['CLOUD_LICENSES'] as $index => $license): ?>
+                                        <?php 
+                                        // Последний элемент - статичная карточка с выбором
+                                        $isLast = ($index === count($arResult['CLOUD_LICENSES']) - 1);
+                                        $isPopular = ($license['TYPE'] == 'popular');
+                                        ?>
                                         <div class="swiper-slide">
-                                            <div class="license__card license__card--cloud<?=($license['TYPE'] == 'static' ? ' license__card--static' : '')?>"<?=($license['TYPE'] == 'static' ? ' data-card' : '')?>>
+                                            <div class="license__card license__card--cloud<?=($isLast ? ' license__card--static' : '')?>"<?=($isLast ? ' data-card' : '')?>>
                                                 <div class="license__card-flip">
                                                     <!-- Лицевая сторона -->
                                                     <div class="license__card-front">
                                                         <div class="license__card-head">
-                                                            <h3 class="license__card-title"><?=nl2br(htmlspecialchars($license['NAME']))?></h3>
+                                                            <h3 class="license__card-title"><?=htmlspecialchars($license['NAME'])?></h3>
                                                             <?php if($license['DESCRIPTION']): ?>
                                                             <p class="license__card-text"><?=htmlspecialchars($license['DESCRIPTION'])?></p>
                                                             <?php endif; ?>
                                                         </div>
-                                                        <div class="license__card-body"<?=($license['TYPE'] != 'static' ? ' data-ruler' : '')?>>
-                                                            <?php if($license['TYPE'] == 'static'): ?>
-                                                            <!-- Для статичной карточки с выбором -->
+                                                        <div class="license__card-body"<?=(!$isLast ? ' data-ruler' : '')?>>
+                                                            <?php if($isLast): ?>
+                                                            <!-- Статичная карточка с выбором -->
                                                             <div class="license__card-employees">
                                                                 <div class="license__card-employees-select" data-card-select>
                                                                     <button class="license__card-employees-toggle" data-card-toggle>
@@ -70,18 +75,19 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                                                         <span class="license__card-employees-text">сотрудников</span>
                                                                     </button>
                                                                     <div class="license__card-employees-dropdown">
-                                                                        <ul class="license__card-employees-menu" data-card-menu>
-                                                                            <li data-price-month="33 990 ₽/мес." data-price-number="250" data-price-year="326 280 ₽/год">
-                                                                                <b>250</b> сотрудников
-                                                                            </li>
-                                                                            <li data-price-month="59 990 ₽/мес" data-price-number="500" data-price-year="575 880 ₽/год">
-                                                                                <b>500</b> сотрудников
-                                                                            </li>
-                                                                            <li data-price-month="99 990 ₽/мес." data-price-number="1000" data-price-year="959 880 ₽/год">
-                                                                                <b>1000</b> сотрудников
-                                                                            </li>
-                                                                        </ul>
+<ul class="license__card-employees-menu" data-card-menu>
+    <?php if(!empty($arResult['ENTERPRISE_OPTIONS'])): ?>
+        <?php foreach($arResult['ENTERPRISE_OPTIONS'] as $option): ?>
+        <li data-price-month="<?=htmlspecialchars($option['PRICE_MONTH'])?>" 
+            data-price-number="<?=htmlspecialchars($option['EMPLOYEES'])?>" 
+            data-price-year="<?=htmlspecialchars($option['PRICE_YEAR'])?>">
+            <b><?=htmlspecialchars($option['EMPLOYEES'])?></b> сотрудников
+        </li>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</ul>
                                                                     </div>
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <?php else: ?>
@@ -90,7 +96,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                                                 <span class="license__card-employees-number"><?=htmlspecialchars($license['EMPLOYEES'])?></span>
                                                                 <span class="license__card-employees-text">сотрудников</span>
                                                                 <span class="license__card-employees-mark">
-                                                                    <?php if($license['TYPE'] == 'popular'): ?>
+                                                                    <?php if($isPopular): ?>
                                                                     <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M13.3505 16.5C13.3505 13.475 11.1772 13.9535 9.06113 9.625C6.56006 11.1154 4.96225 13.6764 4.77177 16.5C4.9095 18.6305 5.94166 20.6157 7.63134 22H6.6162C3.00105 20.7259 0.566833 17.4518 0.482422 13.75C0.482422 7.5075 6.90215 1.66788 10.4909 0C9.80462 5.76262 17.6398 7.26962 17.6398 14.7812C17.6398 20.1121 11.5061 22 11.5061 22H10.4909C12.2875 20.6989 13.346 18.6629 13.3505 16.5Z" fill="#FB6F3D" />
                                                                     </svg>Популярный
@@ -102,7 +108,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                                             <hr class="license__card-line">
                                                             
                                                             <p class="license__card-price">
-                                                                <?php if($license['TYPE'] == 'static'): ?>
+                                                                <?php if($isLast): ?>
                                                                 <sup class="js-price-month"><?=number_format($license['PRICE_MONTH'], 0, '', ' ')?> ₽/мес.</sup>
                                                                 <span>
                                                                     <span class="js-price-year"><?=number_format($license['PRICE_YEAR_DISCOUNTED'], 0, '', ' ')?> ₽/год</span>
@@ -127,12 +133,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                                     <!-- Обратная сторона -->
                                                     <div class="license__card-back">
                                                         <div class="license__card-head">
-                                                            <h3 class="license__card-title"><?=nl2br(htmlspecialchars($license['NAME']))?></h3>
+                                                            <h3 class="license__card-title"><?=htmlspecialchars($license['NAME'])?></h3>
                                                             <?php if($license['DESCRIPTION']): ?>
                                                             <p class="license__card-text"><?=htmlspecialchars($license['DESCRIPTION'])?></p>
                                                             <?php endif; ?>
                                                         </div>
-                                                        <div class="license__card-body"<?=($license['TYPE'] != 'static' ? ' data-ruler' : '')?>>
+                                                        <div class="license__card-body"<?=(!$isLast ? ' data-ruler' : '')?>>
                                                             <ul class="license__card-list">
                                                                 <?php if(!empty($license['FEATURES'])): ?>
                                                                     <?php foreach($license['FEATURES'] as $feature): ?>
