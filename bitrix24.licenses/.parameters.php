@@ -52,7 +52,7 @@ $arComponentParameters = [
             "DEFAULT" => "В таблице цены со скидкой 50% для тех, кто покупает подписку впервые",
         ],
         
-        // Варианты цен для последней карточки "Энтерпрайз"
+        // Варианты цен для последней карточки "Энтерпрайз" в лицензиях
         "ENTERPRISE_OPTION_1_EMPLOYEES" => [
             "PARENT" => "ENTERPRISE",
             "NAME" => "Вариант 1 - Количество сотрудников",
@@ -110,13 +110,74 @@ $arComponentParameters = [
             "DEFAULT" => "959880",
         ],
         
+        // Варианты цен для последней карточки подписок (облачная)
+        "SUBSCRIPTION_CLOUD_OPTION_1_EMPLOYEES" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 1 - Количество сотрудников",
+            "TYPE" => "STRING",
+            "DEFAULT" => "250",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_1_PRICE_MONTH" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 1 - Цена в месяц (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "4995",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_1_PRICE_YEAR" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 1 - Цена в год (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "59940",
+        ],
+        
+        "SUBSCRIPTION_CLOUD_OPTION_2_EMPLOYEES" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 2 - Количество сотрудников",
+            "TYPE" => "STRING",
+            "DEFAULT" => "500",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_2_PRICE_MONTH" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 2 - Цена в месяц (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "9995",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_2_PRICE_YEAR" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 2 - Цена в год (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "119880",
+        ],
+        
+        "SUBSCRIPTION_CLOUD_OPTION_3_EMPLOYEES" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 3 - Количество сотрудников",
+            "TYPE" => "STRING",
+            "DEFAULT" => "1000",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_3_PRICE_MONTH" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 3 - Цена в месяц (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "19995",
+        ],
+        "SUBSCRIPTION_CLOUD_OPTION_3_PRICE_YEAR" => [
+            "PARENT" => "SUBSCRIPTION_CLOUD",
+            "NAME" => "Вариант 3 - Цена в год (руб)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "239880",
+        ],
+        
         "CACHE_TIME" => [
             "DEFAULT" => 3600,
         ],
     ],
     "GROUPS" => [
         "ENTERPRISE" => [
-            "NAME" => "Карточка Энтерпрайз - Варианты цен"
+            "NAME" => "Лицензии: Карточка Энтерпрайз - Варианты цен"
+        ],
+        "SUBSCRIPTION_CLOUD" => [
+            "NAME" => "Подписки: Облачная карточка - Варианты цен"
         ],
     ]
 ];

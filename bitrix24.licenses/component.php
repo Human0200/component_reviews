@@ -130,6 +130,21 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             ];
         }
     }
+
+$arResult['SUBSCRIPTION_CLOUD_OPTIONS'] = [];
+for($i = 1; $i <= 3; $i++) {
+    $employees = trim($arParams['SUBSCRIPTION_CLOUD_OPTION_'.$i.'_EMPLOYEES']);
+    $priceMonth = intval($arParams['SUBSCRIPTION_CLOUD_OPTION_'.$i.'_PRICE_MONTH']);
+    $priceYear = intval($arParams['SUBSCRIPTION_CLOUD_OPTION_'.$i.'_PRICE_YEAR']);
+    
+    if($employees && $priceMonth && $priceYear) {
+        $arResult['SUBSCRIPTION_CLOUD_OPTIONS'][] = [
+            'EMPLOYEES' => $employees,
+            'PRICE_MONTH' => number_format($priceMonth, 0, '', ' ') . ' ₽/мес.',
+            'PRICE_YEAR' => number_format($priceYear, 0, '', ' ') . ' ₽/год'
+        ];
+    }
+}
     
     $cache->EndDataCache($arResult);
 }

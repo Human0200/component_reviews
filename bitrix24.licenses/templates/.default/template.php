@@ -293,11 +293,16 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                             </button>
                             
                             <?php 
-                            // Фильтруем подписки для облачной версии
-                            $cloudSubscriptions = array_filter($arResult['SUBSCRIPTIONS'], function($s) {
-                                return $s['TYPE'] == 'cloud';
-                            });
-                            ?>
+// Фильтруем подписки для облачной версии
+$cloudSubscriptions = array_filter($arResult['SUBSCRIPTIONS'], function($s) {
+    return $s['TYPE'] == 'cloud';
+});
+
+// // ОТЛАДКА
+// echo '<pre>';
+// print_r($arResult['SUBSCRIPTION_CLOUD_OPTIONS']);
+// echo '</pre>';
+?>
                             
                             <?php if(!empty($cloudSubscriptions)): ?>
                             <div class="subsc__swiper">
@@ -305,7 +310,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                     <div class="swiper-wrapper">
                                         <?php foreach($cloudSubscriptions as $subscription): ?>
                                         <div class="swiper-slide">
-                                            <div class="subsc__card subsc__card--cloud<?=($subscription['TYPE'] == 'static' ? ' subsc__card--static' : '')?>"<?=($subscription['TYPE'] == 'static' ? ' data-card' : '')?>>
+                                            <div class="subsc__card subsc__card--cloud">
                                                 <div class="subsc__card-head">
                                                     <?php if($subscription['DISCOUNT'] > 0): ?>
                                                     <span class="subsc__card-badge">-<?=$subscription['DISCOUNT']?>%</span>
@@ -321,52 +326,65 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="subsc__card-body">
-                                                    <?php if($subscription['TYPE'] == 'static'): ?>
-                                                    <!-- Статичная карточка с выбором -->
-                                                    <div class="subsc__card-employees">
-                                                        <div class="subsc__card-employees-select" data-card-select>
-                                                            <button class="subsc__card-employees-toggle" data-card-toggle>
-                                                                <span class="subsc__card-employees-number js-price-number"><?=htmlspecialchars($subscription['EMPLOYEES'])?></span>
-                                                                <span class="subsc__card-employees-text">сотрудников</span>
-                                                            </button>
-                                                            <div class="subsc__card-employees-dropdown">
-                                                                <ul class="subsc__card-employees-menu" data-card-menu>
-                                                                    <li data-price-month="33 990 ₽/мес." data-price-number="250" data-price-year="326 280 ₽/год">
-                                                                        <b>250</b> сотрудников
-                                                                    </li>
-                                                                    <li data-price-month="59 990 ₽/мес" data-price-number="500" data-price-year="575 880 ₽/год">
-                                                                        <b>500</b> сотрудников
-                                                                    </li>
-                                                                    <li data-price-month="99 990 ₽/мес." data-price-number="1000" data-price-year="959 880 ₽/год">
-                                                                        <b>1000</b> сотрудников
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <?php else: ?>
                                                     <p class="subsc__card-employees">
                                                         <span class="subsc__card-employees-number"><?=htmlspecialchars($subscription['EMPLOYEES'])?></span>
                                                         <span class="subsc__card-employees-text">сотрудников</span>
                                                     </p>
-                                                    <?php endif; ?>
-                                                    
                                                     <hr class="subsc__card-line">
-                                                    
                                                     <p class="subsc__card-price">
-                                                        <?php if($subscription['TYPE'] == 'static'): ?>
-                                                        <sup class="js-price-month"><?=number_format($subscription['PRICE_MONTH'], 0, '', ' ')?> ₽/мес.</sup>
-                                                        <span class="js-price-year"><?=number_format($subscription['PRICE_YEAR_DISCOUNTED'], 0, '', ' ')?> ₽/год</span>
-                                                        <?php else: ?>
                                                         <sup><?=number_format($subscription['PRICE_MONTH'], 0, '', ' ')?> ₽/мес.</sup>
                                                         <span><?=number_format($subscription['PRICE_YEAR_DISCOUNTED'], 0, '', ' ')?> ₽/год</span>
-                                                        <?php endif; ?>
                                                         <sub>Цена с НДС</sub>
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
                                         <?php endforeach; ?>
+                                        
+                                        <!-- Дополнительная статическая карточка с параметрами -->
+                                        <?php if(!empty($arResult['SUBSCRIPTION_CLOUD_OPTIONS'])): ?>
+                                        <?php 
+                                        $firstOption = $arResult['SUBSCRIPTION_CLOUD_OPTIONS'][0];
+                                        $priceMonthNum = intval(str_replace([' ', '₽/мес.'], '', $firstOption['PRICE_MONTH']));
+                                        $priceYearNum = intval(str_replace([' ', '₽/год'], '', $firstOption['PRICE_YEAR']));
+                                        ?>
+                                        <div class="swiper-slide">
+                                            <div class="subsc__card subsc__card--cloud subsc__card--static" data-card>
+                                                <div class="subsc__card-head">
+                                                    <span class="subsc__card-badge">-50%</span>
+                                                    <p class="subsc__card-text">Для тарифа</p>
+                                                    <h3 class="subsc__card-title">Энтерпрайз</h3>
+                                                </div>
+                                                <div class="subsc__card-body">
+                                                    <div class="subsc__card-employees">
+                                                        <div class="subsc__card-employees-select" data-card-select>
+                                                            <button class="subsc__card-employees-toggle" data-card-toggle>
+                                                                <span class="subsc__card-employees-number js-price-number"><?=htmlspecialchars($firstOption['EMPLOYEES'])?></span>
+                                                                <span class="subsc__card-employees-text">сотрудников</span>
+                                                            </button>
+                                                            <div class="subsc__card-employees-dropdown">
+                                                                <ul class="subsc__card-employees-menu" data-card-menu>
+                                                                    <?php foreach($arResult['SUBSCRIPTION_CLOUD_OPTIONS'] as $option): ?>
+                                                                    <li data-price-month="<?=htmlspecialchars($option['PRICE_MONTH'])?>" 
+                                                                        data-price-number="<?=htmlspecialchars($option['EMPLOYEES'])?>" 
+                                                                        data-price-year="<?=htmlspecialchars($option['PRICE_YEAR'])?>">
+                                                                        <b><?=htmlspecialchars($option['EMPLOYEES'])?></b> сотрудников
+                                                                    </li>
+                                                                    <?php endforeach; ?>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr class="subsc__card-line">
+                                                    <p class="subsc__card-price">
+                                                        <sup class="js-price-month"><?=number_format($priceMonthNum, 0, '', ' ')?> ₽/мес.</sup>
+                                                        <span class="js-price-year"><?=number_format($priceYearNum, 0, '', ' ')?> ₽/год</span>
+                                                        <sub>Цена с НДС</sub>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

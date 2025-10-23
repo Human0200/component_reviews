@@ -1,7 +1,7 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 ?>
-
+<div>
 <section class="ready">
     <div class="container-fluid">
         <?php if ($arResult['SHOW_SERVICES']): ?>
@@ -48,3 +48,4 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
         <?php endif; ?>
     </div>
 </section>
+</div>
