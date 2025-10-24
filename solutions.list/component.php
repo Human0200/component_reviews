@@ -38,7 +38,10 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'PREVIEW_PICTURE',
         'DETAIL_PICTURE',
         'PROPERTY_CLIENTS_COUNT',
-        'PROPERTY_IMAGE'
+        'PROPERTY_IMAGE',
+        "PROPERTY_URL",
+        "PROPERTY_LOGO",
+        "PROPERTY_IMAGE"
     ];
     
     // Параметры навигации
@@ -65,7 +68,9 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             $image = CFile::GetPath($element['DETAIL_PICTURE']);
         } elseif($element['PREVIEW_PICTURE']) {
             $image = CFile::GetPath($element['PREVIEW_PICTURE']);
-        }
+        } elseif($element['PROPERTY_LOGO_VALUE']) {
+            $image = CFile::GetPath($element['PROPERTY_LOGO_VALUE']);
+        } 
         
         // Количество клиентов
         $clientsCount = $element['PROPERTY_CLIENTS_COUNT_VALUE'] ?: '11';
