@@ -1,5 +1,6 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+$this->setFrameMode(true);
 ?>
 
 <section class="cases" id="cases">
@@ -19,11 +20,15 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 <?php endforeach; ?>
             </ul>
             <?php endif; ?>
-            
+
             <?php if(!empty($arResult['ITEMS'])): ?>
             <ul class="cases__list">
                 <?php foreach($arResult['ITEMS'] as $item): ?>
-                <li>
+                <?php
+                $this->AddEditAction($item['ID'], $item['EDIT_LINK'], CIBlock::GetArrayByID($item["IBLOCK_ID"], "ELEMENT_EDIT"));
+                $this->AddDeleteAction($item['ID'], $item['DELETE_LINK'], CIBlock::GetArrayByID($item["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => "Будет удалена вся информация, связанная с этой записью. Продолжить?"));
+                ?>
+                <li id="<?=$this->GetEditAreaId($item['ID']);?>">
                     <a class="cases__card" href="<?=$item['DETAIL_PAGE_URL']?>">
                         <span class="cases__card-overlap">Читать кейс</span>
                         <div class="cases__card-desc">
@@ -71,16 +76,42 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
         </p>
         <div class="cases__marquee">
             <div class="cases__marquee-anim">
-                <?php for($i = 0; $i < 4; $i++): ?>
-                <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
-                <span class="cases__marquee-line"></span>
-                <?php endfor; ?>
+                <?php 
+                if(!empty($arResult['MARQUEE_TITLES'])):
+                    foreach($arResult['MARQUEE_TITLES'] as $title): 
+                ?>
+                    <span class="cases__marquee-text"><?=htmlspecialchars($title)?></span>
+                    <span class="cases__marquee-line"></span>
+                <?php 
+                    endforeach;
+                else:
+                    for($i = 0; $i < 4; $i++):
+                ?>
+                    <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
+                    <span class="cases__marquee-line"></span>
+                <?php 
+                    endfor;
+                endif;
+                ?>
             </div>
             <div class="cases__marquee-anim" aria-hidden="true">
-                <?php for($i = 0; $i < 4; $i++): ?>
-                <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
-                <span class="cases__marquee-line"></span>
-                <?php endfor; ?>
+                <?php 
+                if(!empty($arResult['MARQUEE_TITLES'])):
+                    foreach($arResult['MARQUEE_TITLES'] as $title): 
+                ?>
+                    <span class="cases__marquee-text"><?=htmlspecialchars($title)?></span>
+                    <span class="cases__marquee-line"></span>
+                <?php 
+                    endforeach;
+                else:
+                    for($i = 0; $i < 4; $i++):
+                ?>
+                    <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
+                    <span class="cases__marquee-line"></span>
+                <?php 
+                    endfor;
+                endif;
+                ?>
             </div>
         </div>
     </div>

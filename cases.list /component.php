@@ -125,14 +125,21 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         // Количество рабочих мест
         $workplaces = $element['PROPERTY_WORKPLACES_COUNT_VALUE'] ?: '';
         
+        // Формируем ссылки для редактирования
+        $editLink = '/bitrix/admin/iblock_element_edit.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&ID='.$element['ID'].'&lang='.LANGUAGE_ID.'&find_section_section=-1&WF=Y';
+        $deleteLink = '/bitrix/admin/iblock_list_admin.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&lang='.LANGUAGE_ID.'&action=delete&ID=E'.$element['ID'].'&sessid='.bitrix_sessid();
+        
         $arResult['ITEMS'][] = [
             'ID' => $element['ID'],
+            'IBLOCK_ID' => $arResult['IBLOCK_ID'],
             'NAME' => $element['NAME'],
             'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
             'IMAGE' => $image,
             'LOGO' => $logo,
             'SPHERE' => $sphere,
-            'WORKPLACES_COUNT' => $workplaces
+            'WORKPLACES_COUNT' => $workplaces,
+            'EDIT_LINK' => $editLink,
+            'DELETE_LINK' => $deleteLink,
         ];
     }
     
@@ -149,6 +156,9 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     
     $cache->EndDataCache($arResult);
 }
+
+// Ссылка для создания нового элемента
+$arResult['ADD_LINK'] = '/bitrix/admin/iblock_element_edit.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&lang='.LANGUAGE_ID.'&find_section_section=-1';
 
 // Подключаем шаблон
 $this->IncludeComponentTemplate();
