@@ -6,7 +6,7 @@ CModule::IncludeModule('iblock');
 // Обработка параметров
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['IBLOCK_CODE'] = trim($arParams['IBLOCK_CODE']);
-$arParams['IBLOCK_TYPE'] = trim($arParams['IBLOCK_TYPE']);
+$arParams['IBLOCK_TYPE'] = trim($arParams['IBLOCK_TYPE']) ?: 'content';
 $arParams['CASES_COUNT'] = intval($arParams['CASES_COUNT']) ?: 8;
 $arParams['SORT_BY'] = trim($arParams['SORT_BY']) ?: 'SORT';
 $arParams['SORT_ORDER'] = in_array($arParams['SORT_ORDER'], ['ASC', 'DESC']) ? $arParams['SORT_ORDER'] : 'ASC';
@@ -73,10 +73,10 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'DETAIL_PAGE_URL',
         'PREVIEW_PICTURE',
         'DETAIL_PICTURE',
-        'PROPERTY_SPHERE',           // Сфера деятельности
-        'PROPERTY_WORKPLACES_COUNT', // Количество рабочих мест
-        'PROPERTY_LOGO',             // Логотип компании
-        'PROPERTY_IMAGE',            // Дополнительное изображение
+        'PROPERTY_SPHERE',
+        'PROPERTY_WORKPLACES_COUNT',
+        'PROPERTY_LOGO',
+        'PROPERTY_IMAGE',
     ];
     
     // Параметры навигации
@@ -98,7 +98,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     $arResult['TAGS'] = [];
     
     while($element = $dbElements->GetNext()) {
-        // Получаем изображение (приоритет: PROPERTY_IMAGE -> DETAIL_PICTURE -> PREVIEW_PICTURE)
+        // Получаем изображение
         $image = '';
         if($element['PROPERTY_IMAGE_VALUE']) {
             $image = CFile::GetPath($element['PROPERTY_IMAGE_VALUE']);
@@ -117,7 +117,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         // Сфера деятельности
         $sphere = $element['PROPERTY_SPHERE_VALUE'] ?: '';
         
-        // Добавляем в теги для фильтрации
+        // Добавляем в теги
         if($sphere && !in_array($sphere, $arResult['TAGS'])) {
             $arResult['TAGS'][] = $sphere;
         }
@@ -157,9 +157,34 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     $cache->EndDataCache($arResult);
 }
 
-// Ссылка для создания нового элемента
-$arResult['ADD_LINK'] = '/bitrix/admin/iblock_element_edit.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&lang='.LANGUAGE_ID.'&find_section_section=-1';
+// Сохраняем для использования после кеша
+$this->setResultCacheKeys(array(
+    'IBLOCK_ID',
+));
 
 // Подключаем шаблон
 $this->IncludeComponentTemplate();
+
+// Добавляем кнопки в административную панель (после шаблона, как в news.list)
+global $USER, $APPLICATION;
+if($USER->IsAuthorized())
+{
+    if(
+        $APPLICATION->GetShowIncludeAreas()
+        || $arParams["SET_TITLE"]
+    )
+    {
+        $arButtons = CIBlock::GetPanelButtons(
+            $arResult["IBLOCK_ID"],
+            0,
+            0,
+            array("SECTION_BUTTONS" => false)
+        );
+
+        if($APPLICATION->GetShowIncludeAreas())
+        {
+            $this->addIncludeAreaIcons(CIBlock::GetComponentMenu($APPLICATION->GetPublicShowMode(), $arButtons));
+        }
+    }
+}
 ?>
