@@ -15,6 +15,8 @@ if(!$arParams['IBLOCK_ID']) {
     return;
 }
 
+$arResult['IBLOCK_ID'] = $arParams['IBLOCK_ID'];
+
 // Кеширование
 $cache = new CPHPCache();
 $cache_id = 'solutions_list_'.$arParams['IBLOCK_ID'];
@@ -41,7 +43,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'PROPERTY_IMAGE',
         "PROPERTY_URL",
         "PROPERTY_LOGO",
-        "PROPERTY_IMAGE"
+        "PROPERTY_IMAGE",
+        "IBLOCK_ID",
     ];
     
     // Параметры навигации
@@ -86,7 +89,30 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     
     $cache->EndDataCache($arResult);
 }
-
+$this->setResultCacheKeys(array(
+    'IBLOCK_ID',
+));
 // Подключаем шаблон
 $this->IncludeComponentTemplate();
+global $USER, $APPLICATION;
+if($USER->IsAuthorized())
+{
+    if(
+        $APPLICATION->GetShowIncludeAreas()
+        || $arParams["SET_TITLE"]
+    )
+    {
+        $arButtons = CIBlock::GetPanelButtons(
+            $arResult["IBLOCK_ID"],
+            0,
+            0,
+            array("SECTION_BUTTONS" => false)
+        );
+
+        if($APPLICATION->GetShowIncludeAreas())
+        {
+            $this->addIncludeAreaIcons(CIBlock::GetComponentMenu($APPLICATION->GetPublicShowMode(), $arButtons));
+        }
+    }
+}
 ?>
