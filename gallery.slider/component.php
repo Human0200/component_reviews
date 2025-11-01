@@ -6,9 +6,7 @@ CModule::IncludeModule('iblock');
 // Обработка параметров
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;
-
 $arParams['TITLE'] = trim($arParams['TITLE']) ?: 'Сертификаты';
-
 
 if(!$arParams['IBLOCK_ID']) {
     ShowError('Не указан ID инфоблока');
@@ -38,7 +36,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'PREVIEW_PICTURE',
         'DETAIL_PICTURE',
         'PROPERTY_IMAGE',
-        'PROPERTY_DATE'
+        'PROPERTY_DATE',
+        'PROPERTY_IS_DUAL'
     ];
     
     // Параметры навигации
@@ -52,13 +51,18 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         $arNavParams,
         $arSelect
     );
-    $arResult['TITLE'] = $arParams['TITLE'];
     
+    $arResult['TITLE'] = $arParams['TITLE'];
     $arResult['ITEMS'] = [];
     
     while($element = $dbElements->GetNext()) {
-        $date = new DateTime($element['PROPERTY_DATE_VALUE']);
-        $element['DATE'] = $date->format('d.m.Y');
+        // Форматируем дату
+        $date = '';
+        if($element['PROPERTY_DATE_VALUE']) {
+            $dateObj = new DateTime($element['PROPERTY_DATE_VALUE']);
+            $date = $dateObj->format('d.m.Y');
+        }
+        
         // Получаем картинку
         $image = '';
         if($element['PROPERTY_IMAGE_VALUE']) {
@@ -69,13 +73,22 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             $image = CFile::GetPath($element['PREVIEW_PICTURE']);
         }
         
+        // Проверяем свойство "двойная карточка"
+        $isDual = false;
+        if(isset($element['PROPERTY_IS_DUAL_VALUE'])) {
+            $isDual = ($element['PROPERTY_IS_DUAL_VALUE'] == 'Y' || 
+                      $element['PROPERTY_IS_DUAL_VALUE'] == '1' || 
+                      $element['PROPERTY_IS_DUAL_VALUE'] == 'да' ||
+                      $element['PROPERTY_IS_DUAL_VALUE'] == 'Да');
+        }
         
         $arResult['ITEMS'][] = [
             'ID' => $element['ID'],
             'NAME' => $element['NAME'],
             'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
             'IMAGE' => $image,
-            'DATE' => $element['DATE']
+            'DATE' => $date,
+            'IS_DUAL' => $isDual
         ];
     }
     

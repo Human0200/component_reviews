@@ -1,5 +1,14 @@
 <?php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+
+// Для неавторизованных пользователей - обход проверки сессии
+global $USER;
+if (!$USER->IsAuthorized() && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Принудительно валидируем форму для неавторизованных
+    if (!empty($_POST['web_form_submit']) && !empty($_POST['WEB_FORM_ID'])) {
+        $_SESSION['FORM_SUBMIT_' . $_POST['WEB_FORM_ID']] = true;
+    }
+}
 ?>
 
 <section class="feedback">
@@ -15,7 +24,7 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
         
         <?php if ($arResult["isFormNote"] != "Y"): ?>
             
-            <form class="feedback__form js-validate" 
+            <form class="feedback__form " 
                   action="<?=POST_FORM_ACTION_URI?>" 
                   method="POST" 
                   enctype="multipart/form-data"

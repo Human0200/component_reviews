@@ -5,8 +5,8 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 <section class="certificates">
     <div class="container-fluid">
         <div class="certificates__head">
-            <mark class="certificates__mark">Сертификаты</mark>
-            <h2 class="certificates__title">Сертификаты</h2>
+            <mark class="certificates__mark"><?=htmlspecialchars($arResult['TITLE'])?></mark>
+            <h2 class="certificates__title"><?=htmlspecialchars($arResult['TITLE'])?></h2>
             <p class="certificates__text">Ежегодно мы подтверждаем наши компетенции и статус официального партнера Битрикс24.</p>
         </div>
         <?php if(!empty($arResult['ITEMS'])): ?>
@@ -16,13 +16,15 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
                     <div class="swiper-wrapper">
                         <?php foreach($arResult['ITEMS'] as $arItem): ?>
                         <div class="swiper-slide">
-                            <a class="certificates__card is-dual" href="#">
+                            <a class="certificates__card<?=$arItem['IS_DUAL'] ? ' is-dual' : ''?>" href="<?=$arItem['DETAIL_PAGE_URL'] ?: '#'?>">
                                 <picture class="certificates__card-image">
                                     <img alt="<?=htmlspecialchars($arItem['NAME'])?>" src="<?=$arItem['IMAGE']?>">
                                 </picture>
                                 <div class="certificates__card-desc">
-                                    <h3 class="certificates__card-title">Информация о сертификате</h3>
+                                    <h3 class="certificates__card-title"><?=htmlspecialchars($arItem['NAME'])?></h3>
+                                    <?php if($arItem['DATE']): ?>
                                     <span class="certificates__card-time"><?=htmlspecialchars($arItem['DATE'])?></span>
+                                    <?php endif; ?>
                                 </div>
                             </a>
                         </div>
@@ -42,6 +44,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
-</section><!-- Certificates :: End--><!-- Team :: Start-->
+</section>

@@ -1,5 +1,14 @@
 <?php
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+
+// Для неавторизованных пользователей - обход проверки сессии
+global $USER;
+if (!$USER->IsAuthorized() && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Принудительно валидируем форму для неавторизованных
+    if (!empty($_POST['web_form_submit']) && !empty($_POST['WEB_FORM_ID'])) {
+        $_SESSION['FORM_SUBMIT_' . $_POST['WEB_FORM_ID']] = true;
+    }
+}
 ?>
 
 <div class="modal" id="modal-feedback">
@@ -50,7 +59,6 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 
                 <?=bitrix_sessid_post()?>
                 <input type="hidden" name="web_form_submit" value="Y">
-                <input type="hidden" name="web_form_apply" value="Y">
                 <input type="hidden" name="WEB_FORM_ID" value="<?=$arResult['arForm']['ID']?>">
                 
                 <div class="row">
@@ -182,7 +190,7 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                                 <span class="ui-check__text">Согласен и ознакомлен c <a href="<?=htmlspecialchars($arParams['PRIVACY_URL'] ?: '#')?>">политикой конфиденциальности</a> и <a href="<?=htmlspecialchars($arParams['PERSONAL_DATA_URL'] ?: '#')?>">обработкой персональных данных</a>
                                 </span>
                             </label>
-                            <button class="ui-btn ui-btn--dark"><?=htmlspecialchars($arParams['BUTTON_TEXT'] ?: 'отправить')?></button>
+                            <button class="ui-btn ui-btn--dark" type="submit"><?=htmlspecialchars($arParams['BUTTON_TEXT'] ?: 'отправить')?></button>
                         </div>
                     </div>
                 </div>
