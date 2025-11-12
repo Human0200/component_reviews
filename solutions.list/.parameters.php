@@ -19,6 +19,13 @@ $arComponentParameters = [
             "TYPE" => "STRING",
             "DEFAULT" => "",
         ],
+        "SUBTITLE" => [
+            "PARENT" => "BASE",
+            "NAME" => "Подзаголовок (текст перед карточками)",
+            "TYPE" => "TEXTAREA",
+            "DEFAULT" => "",
+            "ROWS" => 2,
+        ],
     ],
 ];
 ?>

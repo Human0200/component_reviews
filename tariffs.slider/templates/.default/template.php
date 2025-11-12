@@ -2,6 +2,68 @@
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 ?>
 
+<style>
+/* Футер карточки - два блока слева и справа */
+.tariffs__card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: last baseline;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+/* Блок стоимости (слева) */
+.tariffs__card-price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tariffs__card-price-label {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #101010;
+}
+
+.tariffs__card-price {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #101010;
+}
+
+/* Блок срока внедрения (справа) */
+.tariffs__card-deadline-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+}
+
+.tariffs__card-deadline-label {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #101010;
+}
+
+.tariffs__card-deadline {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #101010;
+}
+</style>
+
 <section class="tariffs">
     <div class="container-fluid">
         <h2 class="tariffs__title"><?=htmlspecialchars($arResult['TITLE'])?></h2>
@@ -10,37 +72,37 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 <div class="swiper-wrapper">
                     <?php foreach($arResult['ITEMS'] as $item): ?>
                     <div class="swiper-slide">
-                        <a class="tariffs__card" href="<?=htmlspecialchars($item['LINK'])?>">
+                        <a class="tariffs__card" href="<?=htmlspecialchars($item['LINK'])?>" data-fancybox="">
                             <div class="tariffs__card-head">
                                 <h3 class="tariffs__card-title"><?=htmlspecialchars($item['NAME'])?></h3>
                                 <p class="tariffs__card-caption"><?=htmlspecialchars($item['CAPTION'])?></p>
-                                <?php if($item['HOURS']): ?>
-                                <p class="tariffs__card-time">Доработка готового решения - <b><?=htmlspecialchars($item['HOURS'])?></b></p>
-                                <?php endif; ?>
                             </div>
                             <div class="tariffs__card-body">
                                 <?php if(!empty($item['SERVICES'])): ?>
                                 <ul class="tariffs__card-list">
                                     <?php foreach($item['SERVICES'] as $service): ?>
-                                    <li><?=htmlspecialchars($service)?></li>
+                                    <li><?=$service?></li>
                                     <?php endforeach; ?>
                                 </ul>
                                 <?php endif; ?>
                             </div>
                             <div class="tariffs__card-foot">
-                                <span class="tariffs__card-price">
-                                    <?php if($item['PRICE_MONTH']): ?>
-                                    <small><?=htmlspecialchars($item['PRICE_MONTH'])?></small>
-                                    <?php endif; ?>
-                                    <?php if($item['PRICE_YEAR']): ?>
-                                    <?=htmlspecialchars($item['PRICE_YEAR'])?>
-                                    <?php endif; ?>
-                                    <?php if($item['DISCOUNT']): ?>
-                                    <mark><?=htmlspecialchars($item['DISCOUNT'])?></mark>
-                                    <?php endif; ?>
-                                </span>
-                                <span class="tariffs__card-btn">Заказать внедрение</span>
+                                <div class="tariffs__card-price-block">
+                                    <div class="tariffs__card-price-label">Стоимость</div>
+                                    <div class="tariffs__card-price">
+                                        <?php if($item['PRICE_YEAR']): ?>
+                                        <?=htmlspecialchars($item['PRICE_YEAR'])?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="tariffs__card-deadline-block">
+                                    <div class="tariffs__card-deadline-label">Срок внедрения</div>
+                                    <div class="tariffs__card-deadline">
+                                        <?=htmlspecialchars($item['DEADLINE'] ?: '5 дней')?>
+                                    </div>
+                                </div>
                             </div>
+                            <span class="tariffs__card-btn">Заказать внедрение</span>
                         </a>
                     </div>
                     <?php endforeach; ?>

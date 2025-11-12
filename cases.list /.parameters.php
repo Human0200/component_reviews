@@ -26,18 +26,21 @@ $arComponentParameters = [
             "NAME" => "Метка секции",
             "TYPE" => "STRING",
             "DEFAULT" => "Кейсы",
+            "ROWS" => 2,
         ],
         "SECTION_TITLE" => [
             "PARENT" => "VISUAL",
             "NAME" => "Заголовок секции",
             "TYPE" => "STRING",
             "DEFAULT" => "Мы работали и работаем",
+            "ROWS" => 2,
         ],
         "SECTION_TEXT" => [
             "PARENT" => "VISUAL",
             "NAME" => "Текст секции",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "Мы собрали весь наш опыт и подробно описали его, чтобы вы могли оценить наши возможности.",
+            "ROWS" => 3,
         ],
         "COUNTER_NUMBER" => [
             "PARENT" => "VISUAL",
@@ -48,20 +51,23 @@ $arComponentParameters = [
         "COUNTER_TEXT" => [
             "PARENT" => "VISUAL",
             "NAME" => "Текст счетчика",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "Умпешного внедрения\nCRM-системы в разные ниши",
+            "ROWS" => 3,
         ],
         "TAGLINE_ROW_1" => [
             "PARENT" => "VISUAL",
             "NAME" => "Текст таглайн (строка 1)",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "Эти кейсы — лишь малая\nчасть того",
+            "ROWS" => 2,
         ],
         "TAGLINE_ROW_2" => [
             "PARENT" => "VISUAL",
             "NAME" => "Текст таглайн (строка 2)",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "что мы можем\nпродемонстрировать",
+            "ROWS" => 2,
         ],
         "MARQUEE_TEXT" => [
             "PARENT" => "VISUAL",
@@ -107,4 +113,3 @@ $arComponentParameters = [
         ],
     ],
 ];
-?>

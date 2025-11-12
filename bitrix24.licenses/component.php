@@ -63,7 +63,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             // АВТОМАТИЧЕСКИЙ РАСЧЕТ цены со скидкой
             $priceYearDiscounted = $priceYear;
             if($discount > 0 && $priceYear > 0) {
-                $priceYearDiscounted = $priceYear * (1 - $discount / 100);
+                $priceYearDiscounted = $priceYear * (1 - 0 / 100); //$discount
             }
             
             // АВТОМАТИЧЕСКИЙ РАСЧЕТ цены в месяц из годовой цены
@@ -126,7 +126,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             $arResult['ENTERPRISE_OPTIONS'][] = [
                 'EMPLOYEES' => $employees,
                 'PRICE_MONTH' => number_format($priceMonth, 0, '', ' ') . ' ₽/мес.',
-                'PRICE_YEAR' => number_format($priceYear, 0, '', ' ') . ' ₽/год'
+                'PRICE_YEAR' => number_format($priceYear, 0, '', ' ') . ' ₽/год',
+                'PRICE_YEAR_ORIGINAL' => $priceYear,
             ];
         }
     }

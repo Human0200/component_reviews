@@ -49,7 +49,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
             <?php foreach($arResult['BUTTONS'] as $button): ?>
                 <a class="<?=htmlspecialchars($button['CLASS'])?>" 
                    <?php if ($button['CURSOR']): ?>data-cursor="<?=htmlspecialchars($button['CURSOR'])?>"<?php endif; ?>
-                   href="<?=htmlspecialchars($button['LINK'])?>">
+                   href="<?=htmlspecialchars($button['LINK'])?>" data-fancybox="">
                     <?=htmlspecialchars($button['TEXT'])?>
                 </a>
             <?php endforeach; ?>

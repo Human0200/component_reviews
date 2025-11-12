@@ -32,7 +32,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
             </div>
 
             <div class="intro__action">
-                <a class="ui-btn ui-btn--gradient" href="<?= htmlspecialchars($arResult['BUTTON_LINK']) ?>"><?= htmlspecialchars($arResult['BUTTON_TEXT']) ?></a>
+                <a class="ui-btn ui-btn--gradient" href="<?= htmlspecialchars($arResult['BUTTON_LINK']) ?>" data-fancybox=""><?= htmlspecialchars($arResult['BUTTON_TEXT']) ?></a>
             </div>
 
             <table class="intro__table">

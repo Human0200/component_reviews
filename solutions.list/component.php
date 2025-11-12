@@ -59,6 +59,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         $arSelect
     );
     $arResult['TITLE'] = $arParams['TITLE'];
+    $arResult['SUBTITLE'] = $arParams['SUBTITLE'];
     
     $arResult['ITEMS'] = [];
     

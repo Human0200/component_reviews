@@ -5,12 +5,12 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 <section class="team">
     <div class="container-fluid">
         <div class="team__head">
-            <mark class="team__mark"><?=htmlspecialchars($arResult['SECTION_MARK'])?></mark>
-            <h2 class="team__title"><?=htmlspecialchars($arResult['SECTION_TITLE'])?></h2>
+            <mark class="team__mark"><?=nl2br($arResult['SECTION_MARK'])?></mark>
+            <h2 class="team__title"><?=nl2br($arResult['SECTION_TITLE'])?></h2>
             <hr class="team__line">
         </div>
         <div class="team__body">
-            <p class="team__text"><?=htmlspecialchars($arResult['SECTION_TEXT'])?></p>
+            <p class="team__text"><?=nl2br($arResult['SECTION_TEXT'])?></p>
             <div class="team__wrapper">
                 <picture class="team__cover">
                     <source media="(min-width: 992px)" srcset="<?=htmlspecialchars($arResult['COVER_IMAGE_DESKTOP'])?>">
@@ -24,10 +24,13 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                         <div class="team__card">
                             <div class="team__card-flip">
                                 <div class="team__card-back">
-                                    <?php for($j = 0; $j < $card['USERS_COUNT']; $j++): ?>
+                                    <?php 
+                                    for($j = 0; $j < $card['USERS_COUNT']; $j++): 
+                                        $userImage = !empty($card['USER_IMAGES'][$j]) ? $card['USER_IMAGES'][$j] : '/assets/images/team/user-01.webp';
+                                    ?>
                                     <figure class="team__card-user">
                                         <picture class="team__card-user-image">
-                                            <img alt="" src="assets/images/team/user-0<?=($j + 1)?>.webp">
+                                            <img alt="" src="<?=htmlspecialchars($userImage)?>">
                                         </picture>
                                         <figcaption class="team__card-user-figcaption">сотрудники</figcaption>
                                     </figure>

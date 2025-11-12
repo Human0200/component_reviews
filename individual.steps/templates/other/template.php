@@ -19,7 +19,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                         <h3 class="stack__card-title"><?=htmlspecialchars($item['TITLE'])?></h3>
                     </div>
                     <div class="stack__card-body">
-                        <p><?=htmlspecialchars($item['TEXT'])?></p>
+                        <div><?=$item['TEXT']?></div>
                     </div>
                 </div>
             </li>
@@ -29,7 +29,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 <div class="stack__request">
                     <h3 class="stack__request-title"><?=nl2br(htmlspecialchars($arResult['REQUEST_TITLE']))?></h3>
                     <div class="stack__request-action">
-                        <a class="ui-btn ui-btn--gradient" href="<?=htmlspecialchars($arResult['BUTTON_LINK'])?>">
+                        <a class="ui-btn ui-btn--gradient" href="<?=htmlspecialchars($arResult['BUTTON_LINK'])?>" data-fancybox="">
                             <?=htmlspecialchars($arResult['BUTTON_TEXT'])?>
                         </a>
                     </div>

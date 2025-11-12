@@ -14,7 +14,7 @@ if (!$USER->IsAuthorized() && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="feedback">
     <div class="container-fluid">
         <h2 class="feedback__title"><?=htmlspecialchars($arParams['SECTION_TITLE'] ?: 'Ответим на всё, что вас интересует')?></h2>
-        <p class="feedback__text"><?=htmlspecialchars($arParams['SECTION_TEXT'] ?: 'Вы знаете цели, мы знаем инструмент. Создадим оптимальное решение вместе.')?></p>
+        <p class="feedback__text"><?=nl2br($arParams['SECTION_TEXT'] ?: 'Вы знаете цели, мы знаем инструмент. Создадим оптимальное решение вместе.')?></p>
         
         <?php if ($arResult["isFormErrors"] == "Y"): ?>
             <div class="feedback__errors" style="background: #fee; border: 1px solid #fcc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">

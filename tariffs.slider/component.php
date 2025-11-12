@@ -30,7 +30,8 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'PROPERTY_PRICE_MONTH',
         'PROPERTY_PRICE_YEAR',
         'PROPERTY_DISCOUNT',
-        'PROPERTY_LINK'
+        'PROPERTY_LINK',
+        'PROPERTY_DEADLINE'
     ];
     
     $arFilter = [
@@ -66,6 +67,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             'PRICE_YEAR' => $element['PROPERTY_PRICE_YEAR_VALUE'],
             'DISCOUNT' => $element['PROPERTY_DISCOUNT_VALUE'],
             'LINK' => $element['PROPERTY_LINK_VALUE'] ?: '#',
+            'DEADLINE' => $element['PROPERTY_DEADLINE_VALUE'] ?: '5 дней',
             'SERVICES' => $services
         ];
     }

@@ -13,9 +13,9 @@ $arParams['SORT_ORDER'] = in_array($arParams['SORT_ORDER'], ['ASC', 'DESC']) ? $
 $arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;
 
 $arParams['SECTION_MARK'] = trim($arParams['SECTION_MARK']) ?: 'Кейсы';
-$arParams['SECTION_TITLE'] = trim($arParams['SECTION_TITLE']) ?: 'Мы работали и работаем';
-$arParams['SECTION_TEXT'] = trim($arParams['SECTION_TEXT']) ?: 'Мы собрали весь наш опыт и подробно описали его, чтобы вы могли оценить наши возможности.';
-$arParams['COUNTER_NUMBER'] = trim($arParams['COUNTER_NUMBER']) ?: '300+';
+$arParams['SECTION_TITLE'] = trim($arParams['SECTION_TITLE']) ?: 'Из реального мира';
+$arParams['SECTION_TEXT'] = trim($arParams['SECTION_TEXT']) ?: 'Мы поделились своим опытом — чтобы вы могли оценить наш подход и компетенции. Всё подробно описано, чтобы вы чувствовали уверенность в сотрудничестве.';
+$arParams['COUNTER_NUMBER'] = trim($arParams['COUNTER_NUMBER']) ?: '350+';
 $arParams['COUNTER_TEXT'] = str_replace('\n', "\n", trim($arParams['COUNTER_TEXT']) ?: "Успешного внедрения\nCRM-системы в разные ниши");
 $arParams['TAGLINE_ROW_1'] = str_replace('\n', "\n", trim($arParams['TAGLINE_ROW_1']) ?: "Эти кейсы — лишь малая\nчасть того");
 $arParams['TAGLINE_ROW_2'] = str_replace('\n', "\n", trim($arParams['TAGLINE_ROW_2']) ?: "что мы можем\nпродемонстрировать");
@@ -66,17 +66,17 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'ACTIVE' => 'Y'
     ];
     
-    // Выборка полей
+    // Выборка полей - УБРАНО системное DETAIL_PAGE_URL
     $arSelect = [
         'ID',
         'NAME',
-        'DETAIL_PAGE_URL',
         'PREVIEW_PICTURE',
         'DETAIL_PICTURE',
         'PROPERTY_SPHERE',
         'PROPERTY_WORKPLACES_COUNT',
         'PROPERTY_LOGO',
         'PROPERTY_IMAGE',
+        'PROPERTY_DETAIL_PAGE_URL', // кастомное свойство ссылки
     ];
     
     // Параметры навигации
@@ -125,6 +125,9 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         // Количество рабочих мест
         $workplaces = $element['PROPERTY_WORKPLACES_COUNT_VALUE'] ?: '';
         
+        // Кастомная ссылка - используем PROPERTY_DETAIL_PAGE_URL_VALUE
+        $customDetailUrl = $element['PROPERTY_DETAIL_PAGE_URL_VALUE'] ?: '';
+        
         // Формируем ссылки для редактирования
         $editLink = '/bitrix/admin/iblock_element_edit.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&ID='.$element['ID'].'&lang='.LANGUAGE_ID.'&find_section_section=-1&WF=Y';
         $deleteLink = '/bitrix/admin/iblock_list_admin.php?IBLOCK_ID='.$arResult['IBLOCK_ID'].'&type='.$arParams['IBLOCK_TYPE'].'&lang='.LANGUAGE_ID.'&action=delete&ID=E'.$element['ID'].'&sessid='.bitrix_sessid();
@@ -133,7 +136,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             'ID' => $element['ID'],
             'IBLOCK_ID' => $arResult['IBLOCK_ID'],
             'NAME' => $element['NAME'],
-            'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
+            'DETAIL_PAGE_URL' => $customDetailUrl, // кастомное свойство
             'IMAGE' => $image,
             'LOGO' => $logo,
             'SPHERE' => $sphere,

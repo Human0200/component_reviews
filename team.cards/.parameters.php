@@ -13,14 +13,16 @@ $arComponentParameters = [
         "SECTION_TITLE" => [
             "PARENT" => "BASE",
             "NAME" => "Заголовок секции",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "Наши сотрудники регулярно проходят курсы повышения квалификации",
+            "ROWS" => 2,
         ],
         "SECTION_TEXT" => [
             "PARENT" => "BASE",
             "NAME" => "Текст секции",
-            "TYPE" => "STRING",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "Что позволяет им оставаться в курсе последних тенденций и развивать свои навыки",
+            "ROWS" => 2,
         ],
         "COVER_IMAGE_DESKTOP" => [
             "PARENT" => "VISUAL",

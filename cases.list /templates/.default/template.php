@@ -7,10 +7,10 @@ $this->setFrameMode(true);
     <div class="container-fluid">
         <span class="cases__cube cases__cube--01"></span>
         <span class="cases__cube cases__cube--02"></span>
-        <mark class="cases__mark"><?=htmlspecialchars($arResult['SECTION_MARK'])?></mark>
+        <mark class="cases__mark"><?=$arResult['SECTION_MARK']?></mark>
         <div class="cases__desc">
-            <h3 class="cases__title"><?=htmlspecialchars($arResult['SECTION_TITLE'])?></h3>
-            <p class="cases__text"><?=htmlspecialchars($arResult['SECTION_TEXT'])?></p>
+            <h3 class="cases__title"><?=$arResult['SECTION_TITLE']?></h3>
+            <p class="cases__text"><?=nl2br($arResult['SECTION_TEXT'])?></p>
         </div>
         <div class="cases__tiles">
             <?php if($arResult['SHOW_TAGS'] && !empty($arResult['TAGS'])): ?>
@@ -29,7 +29,7 @@ $this->setFrameMode(true);
                 $this->AddDeleteAction($item['ID'], $item['DELETE_LINK'], CIBlock::GetArrayByID($item["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => "Будет удалена вся информация, связанная с этой записью. Продолжить?"));
                 ?>
                 <li id="<?=$this->GetEditAreaId($item['ID']);?>">
-                    <a class="cases__card" href="<?=$item['DETAIL_PAGE_URL']?>">
+                    <a class="cases__card" <?=!empty($item['DETAIL_PAGE_URL']) ? 'href="'.$item['DETAIL_PAGE_URL'].'"' : ''?>>
                         <span class="cases__card-overlap">Читать кейс</span>
                         <div class="cases__card-desc">
                             <?php if($item['SPHERE']): ?>
@@ -67,12 +67,12 @@ $this->setFrameMode(true);
             <?php endif; ?>
         </div>
         <p class="cases__counter">
-            <span class="cases__counter-number"><?=htmlspecialchars($arResult['COUNTER_NUMBER'])?></span>
-            <span class="cases__counter-text"><?=nl2br(htmlspecialchars($arResult['COUNTER_TEXT']))?></span>
+            <span class="cases__counter-number"><?=$arResult['COUNTER_NUMBER']?></span>
+            <span class="cases__counter-text"><?=nl2br($arResult['COUNTER_TEXT'])?></span>
         </p>
         <p class="cases__tagline">
-            <span class="cases__tagline-row"><?=nl2br(htmlspecialchars($arResult['TAGLINE_ROW_1']))?></span>
-            <span class="cases__tagline-row"><?=nl2br(htmlspecialchars($arResult['TAGLINE_ROW_2']))?></span>
+            <span class="cases__tagline-row"><?=nl2br($arResult['TAGLINE_ROW_1'])?></span>
+            <span class="cases__tagline-row"><?=nl2br($arResult['TAGLINE_ROW_2'])?></span>
         </p>
         <div class="cases__marquee">
             <div class="cases__marquee-anim">
@@ -87,7 +87,7 @@ $this->setFrameMode(true);
                 else:
                     for($i = 0; $i < 4; $i++):
                 ?>
-                    <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
+                    <span class="cases__marquee-text"><?=$arResult['MARQUEE_TEXT']?></span>
                     <span class="cases__marquee-line"></span>
                 <?php 
                     endfor;
@@ -106,7 +106,7 @@ $this->setFrameMode(true);
                 else:
                     for($i = 0; $i < 4; $i++):
                 ?>
-                    <span class="cases__marquee-text"><?=htmlspecialchars($arResult['MARQUEE_TEXT'])?></span>
+                    <span class="cases__marquee-text"><?=$arResult['MARQUEE_TEXT']?></span>
                     <span class="cases__marquee-line"></span>
                 <?php 
                     endfor;

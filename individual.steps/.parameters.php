@@ -1,5 +1,5 @@
 <?php
-// components/custom/stack.steps/.parameters.php
+// components/custom/individual.steps/.parameters.php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
 CModule::IncludeModule('iblock');
@@ -18,6 +18,12 @@ $arComponentParameters = [
             "TYPE" => "LIST",
             "VALUES" => $arIBlocks,
             "REFRESH" => "Y",
+        ],
+        "PAGE_CODE" => [
+            "PARENT" => "BASE",
+            "NAME" => "Код страницы (для фильтрации элементов)",
+            "TYPE" => "STRING",
+            "DEFAULT" => "",
         ],
         "MARK" => [
             "PARENT" => "BASE",

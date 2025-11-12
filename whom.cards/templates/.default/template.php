@@ -46,7 +46,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
         <?php endif; ?>
         
         <div class="whom__action">
-            <a class="ui-btn ui-btn--dark" href="<?=htmlspecialchars($arResult['BUTTON_LINK'])?>">
+            <a class="ui-btn ui-btn--dark" href="<?=htmlspecialchars($arResult['BUTTON_LINK'])?>" data-fancybox="">
                 <?=htmlspecialchars($arResult['BUTTON_TEXT'])?>
             </a>
         </div>

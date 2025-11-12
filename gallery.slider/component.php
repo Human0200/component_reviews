@@ -52,7 +52,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         $arSelect
     );
     
-    $arResult['TITLE'] = $arParams['TITLE'];
+    $arResult['TITLE'] = html_entity_decode($arParams['TITLE'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $arResult['ITEMS'] = [];
     
     while($element = $dbElements->GetNext()) {
@@ -84,7 +84,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         
         $arResult['ITEMS'][] = [
             'ID' => $element['ID'],
-            'NAME' => $element['NAME'],
+            'NAME' => html_entity_decode($element['NAME'], ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
             'IMAGE' => $image,
             'DATE' => $date,

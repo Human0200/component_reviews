@@ -1,14 +1,30 @@
-<?php
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
-?>
+<style>
+    .solutions__subtitle {
+    margin: 0 0 20px 0;
+    text-align: left;
+    max-width: 100%;
+    font-size: 24px;
+}
 
+/* Скрываем на мобильных и планшетах */
+@media (max-width: 900px) {
+    .solutions__subtitle {
+        display: none;
+    }
+}
+</style>
 <section class="solutions" id="solutions">
     <div class="container-fluid">
         <div class="solutions__head">
             <h2 class="solutions__title"><?=$arResult['TITLE']?></h2>
             <p class="solutions__text">
-                <small>Уже пользуются:</small> 150+ клиентов
+                <small>Уже пользуются:</small> 170+ клиентов
             </p>
+        </div>
+        
+        <!-- Добавленный текст ПЕРЕД карточками -->
+        <div class="solutions__subtitle">
+            <?=nl2br($arResult['SUBTITLE'])?>
         </div>
         
         <?php if(!empty($arResult['ITEMS'])): ?>
