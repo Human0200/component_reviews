@@ -1,6 +1,6 @@
 <?php
 // components/custom/solutions.list/.parameters.php
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
 $arComponentParameters = [
     "PARAMETERS" => [
@@ -26,6 +26,11 @@ $arComponentParameters = [
             "DEFAULT" => "",
             "ROWS" => 2,
         ],
+        'CHECK_404' => [
+            'PARENT' => 'BASE',
+            'NAME' => 'Проверять URL на 404',
+            'TYPE' => 'CHECKBOX',
+            'DEFAULT' => 'Y',
+        ],
     ],
 ];
-?>

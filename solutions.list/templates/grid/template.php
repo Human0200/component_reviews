@@ -10,7 +10,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
                 <?php foreach ($arResult['ITEMS'] as $item): ?>
                     <?php $this->AddEditAction($item['ID'], '/bitrix/admin/iblock_element_edit.php?IBLOCK_ID=' . $arResult['IBLOCK_ID'] . '&type=' . 'content' . '&ID=' . $item['ID'] . '', CIBlock::GetArrayByID($arResult["IBLOCK_ID"], "ELEMENT_EDIT")); ?>
                     <div class="solutions-grid__item" id="<?= $this->GetEditAreaId($item['ID']) ?>"> <!-- ДОБАВЛЕНО -->
-                        <a class="solutions-grid__card" href="<?= $item['DETAIL_PAGE_URL'] ?>">
+                        <a class="solutions-grid__card" <?=!empty($item['DETAIL_PAGE_URL']) ? 'href="'.$item['DETAIL_PAGE_URL'].'"' : ''?>>
                             <?php if ($item['IMAGE']): ?>
                                 <div class="solutions-grid__image">
                                     <img src="<?= $item['IMAGE'] ?>" alt="<?= htmlspecialchars($item['NAME']) ?>">

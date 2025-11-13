@@ -10,7 +10,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 <div class="swiper-wrapper">
                     <?php foreach($arResult['ITEMS'] as $item): ?>
                     <div class="swiper-slide">
-                        <a class="other__card" href="<?=htmlspecialchars($item['DETAIL_PAGE_URL'])?>">
+                        <a class="other__card" <?=!empty($item['DETAIL_PAGE_URL']) ? 'href="'.$item['DETAIL_PAGE_URL'].'"' : ''?>>
                             <picture class="other__card-image">
                                 <img src="<?=htmlspecialchars($item['IMAGE'])?>" alt="">
                             </picture>

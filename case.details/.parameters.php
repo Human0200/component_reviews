@@ -8,6 +8,7 @@ $arComponentParameters = [
             "NAME" => "Фоновое изображение (URL)",
             "TYPE" => "STRING",
             "DEFAULT" => "",
+            
         ],
         "MARK_TEXT" => [
             "PARENT" => "BASE",
@@ -25,9 +26,10 @@ $arComponentParameters = [
         ],
         "BLOCK_1_TEXT" => [
             "PARENT" => "BLOCK_1",
-            "NAME" => "Текст (HTML)",
-            "TYPE" => "TEXT",
+            "NAME" => "Текст",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "",
+            "ROWS" => 2,
         ],
         "BLOCK_1_CLIENT_NAME" => [
             "PARENT" => "BLOCK_1",
@@ -51,9 +53,10 @@ $arComponentParameters = [
         ],
         "BLOCK_2_TEXT" => [
             "PARENT" => "BLOCK_2",
-            "NAME" => "Текст (HTML)",
-            "TYPE" => "TEXT",
+            "NAME" => "Текст",
+            "TYPE" => "TEXTAREA",
             "DEFAULT" => "",
+            "ROWS" => 2,
         ],
         
         "CACHE_TIME" => [

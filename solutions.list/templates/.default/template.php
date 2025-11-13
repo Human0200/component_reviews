@@ -34,7 +34,7 @@
                     <div class="swiper-wrapper">
                         <?php foreach($arResult['ITEMS'] as $item): ?>
                         <div class="swiper-slide">
-                            <a class="solutions__card" href="<?=$item['DETAIL_PAGE_URL']?>">
+                            <a class="solutions__card" <?=!empty($item['DETAIL_PAGE_URL']) ? 'href="'.$item['DETAIL_PAGE_URL'].'"' : ''?>>
                                 <picture class="solutions__card-image">
                                     <img alt="<?=htmlspecialchars($item['NAME'])?>" src="<?=$item['IMAGE']?>">
                                 </picture>

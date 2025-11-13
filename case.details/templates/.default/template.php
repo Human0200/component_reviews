@@ -20,7 +20,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
                 <div class="details__card">
                     <h2 class="details__card-title"><?=htmlspecialchars($block['TITLE'])?></h2>
                     <div class="details__card-desc">
-                        <?=$block['TEXT']?>
+                        <?=nl2br( $block['TEXT'] )?>
                         
                         <?php if($block['CLIENT_NAME']): ?>
                         <p>

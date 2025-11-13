@@ -1,14 +1,12 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
-
 CModule::IncludeModule('iblock');
 
 // Обработка параметров
 $arParams['IBLOCK_ID'] = intval($arParams['IBLOCK_ID']);
 $arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']) ?: 3600;
-
 $arParams['TITLE'] = trim($arParams['TITLE']) ?: 'Решения';
-
+$arParams['CHECK_404'] = isset($arParams['CHECK_404']) ? $arParams['CHECK_404'] === 'Y' : false;
 
 if(!$arParams['IBLOCK_ID']) {
     ShowError('Не указан ID инфоблока');
@@ -17,15 +15,44 @@ if(!$arParams['IBLOCK_ID']) {
 
 $arResult['IBLOCK_ID'] = $arParams['IBLOCK_ID'];
 
+// Функция проверки URL на 404
+function checkUrlExists($url) {
+    if(empty($url)) {
+        return false;
+    }
+    
+    // Проверяем только внутренние URL
+    if(strpos($url, '/') !== 0) {
+        return true;
+    }
+    
+    $documentRoot = $_SERVER['DOCUMENT_ROOT'];
+    $filePath = $documentRoot . $url;
+    
+    // Убираем параметры из URL
+    $filePath = preg_replace('/\?.*$/', '', $filePath);
+    
+    // Проверяем существование файла или директории с index.php
+    if(file_exists($filePath)) {
+        return true;
+    }
+    
+    // Проверяем index.php в директории
+    if(is_dir($filePath) && file_exists($filePath . '/index.php')) {
+        return true;
+    }
+    
+    return false;
+}
+
 // Кеширование
 $cache = new CPHPCache();
-$cache_id = 'solutions_list_'.$arParams['IBLOCK_ID'];
+$cache_id = 'solutions_list_'.$arParams['IBLOCK_ID'].'_'.($arParams['CHECK_404'] ? '1' : '0');
 $cache_path = '/solutions/list/';
 
 if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $cache_id, $cache_path)) {
     $arResult = $cache->GetVars();
 } elseif($cache->StartDataCache()) {
-    
     // Фильтр
     $filter = [
         'IBLOCK_ID' => $arParams['IBLOCK_ID'],
@@ -41,10 +68,9 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         'DETAIL_PICTURE',
         'PROPERTY_CLIENTS_COUNT',
         'PROPERTY_IMAGE',
-        "PROPERTY_URL",
-        "PROPERTY_LOGO",
-        "PROPERTY_IMAGE",
-        "IBLOCK_ID",
+        'PROPERTY_URL',
+        'PROPERTY_LOGO',
+        'IBLOCK_ID',
     ];
     
     // Параметры навигации
@@ -58,9 +84,9 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         $arNavParams,
         $arSelect
     );
+    
     $arResult['TITLE'] = $arParams['TITLE'];
     $arResult['SUBTITLE'] = $arParams['SUBTITLE'];
-    
     $arResult['ITEMS'] = [];
     
     while($element = $dbElements->GetNext()) {
@@ -74,7 +100,13 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
             $image = CFile::GetPath($element['PREVIEW_PICTURE']);
         } elseif($element['PROPERTY_LOGO_VALUE']) {
             $image = CFile::GetPath($element['PROPERTY_LOGO_VALUE']);
-        } 
+        }
+        
+        // Проверяем URL на 404
+        $detailPageUrl = $element['DETAIL_PAGE_URL'];
+        if($arParams['CHECK_404'] && !checkUrlExists($detailPageUrl)) {
+            $detailPageUrl = '';
+        }
         
         // Количество клиентов
         $clientsCount = $element['PROPERTY_CLIENTS_COUNT_VALUE'] ?: '11';
@@ -82,7 +114,7 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
         $arResult['ITEMS'][] = [
             'ID' => $element['ID'],
             'NAME' => $element['NAME'],
-            'DETAIL_PAGE_URL' => $element['DETAIL_PAGE_URL'],
+            'DETAIL_PAGE_URL' => $detailPageUrl,
             'IMAGE' => $image,
             'CLIENTS_COUNT' => $clientsCount
         ];
@@ -90,11 +122,14 @@ if($arParams['CACHE_TIME'] > 0 && $cache->InitCache($arParams['CACHE_TIME'], $ca
     
     $cache->EndDataCache($arResult);
 }
+
 $this->setResultCacheKeys(array(
     'IBLOCK_ID',
 ));
+
 // Подключаем шаблон
 $this->IncludeComponentTemplate();
+
 global $USER, $APPLICATION;
 if($USER->IsAuthorized())
 {
@@ -109,7 +144,6 @@ if($USER->IsAuthorized())
             0,
             array("SECTION_BUTTONS" => false)
         );
-
         if($APPLICATION->GetShowIncludeAreas())
         {
             $this->addIncludeAreaIcons(CIBlock::GetComponentMenu($APPLICATION->GetPublicShowMode(), $arButtons));
