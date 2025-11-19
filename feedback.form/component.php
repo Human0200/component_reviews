@@ -86,13 +86,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["feedback_submit"])) {
             $leadData['notes'][] = 'Дата: ' . date('d.m.Y H:i:s');
             $leadData['notes'][] = 'Страница: ' . $formData['PAGE_URL'];
             
+            // Добавляем контактные данные в комментарий
+            $contactInfo = [];
+            if (!empty($phone)) {
+                $contactInfo[] = '📞 Телефон: ' . $phone;
+            }
+            if (!empty($email)) {
+                $contactInfo[] = '📧 Email: ' . $email;
+            }
+            if (!empty($contactInfo)) {
+                $leadData['notes'][] = '👤 Контактные данные:';
+                $leadData['notes'] = array_merge($leadData['notes'], $contactInfo);
+            }
+            
             if (!empty($contactMethod)) {
                 $contactMethodLabel = FormAmoCRMHandler::CONTACT_METHOD_LABELS[$contactMethod] ?? $contactMethod;
                 $leadData['notes'][] = '🔔 Предпочтительный способ связи: ' . $contactMethodLabel;
             }
             
             $leadData['notes'][] = '---';
-            $leadData['notes'][] = 'ВОПРОС:';
+            $leadData['notes'][] = '❓ ВОПРОС:';
             $leadData['notes'][] = $message;
             
             // Отправляем в amoCRM

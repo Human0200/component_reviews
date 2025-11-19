@@ -125,7 +125,7 @@ class AutoPageCreator
 
         // Проверяем, нужно ли создавать/обновлять файл
         if (file_exists($indexFile)) {
-            return; 
+            return; // Файл уже существует, не перезаписываем НИКОГДА
         }
 
         // Генерируем содержимое страницы
@@ -250,16 +250,22 @@ $APPLICATION->SetTitle("TITLE_PLACEHOLDER");
     false
 );?>
 
-<?$APPLICATION->IncludeComponent(
-    "bitrix:main.include",
-    "",
-    [
-        "AREA_FILE_SHOW" => "file",
-        "AREA_FILE_SUFFIX" => "inc",
-        "EDIT_TEMPLATE" => "",
-        "PATH" => "/local/include/targets.php"
-    ]
-);?>
+<?php
+$APPLICATION->IncludeComponent(
+    "leadspace:targets.list", 
+    ".default", 
+    array(
+        "TITLE" => "Цели проекта",
+        "TARGET_1_TITLE" => "Заголовок",
+        "TARGET_1_TEXT" => "Описание.",
+        "TARGET_2_TITLE" => "Заголовок", 
+        "TARGET_2_TEXT" => "Описание",
+        "TARGET_3_TITLE" => "Заголовок",
+        "TARGET_3_TEXT" => "Описание.",
+        "CACHE_TIME" => 3600
+    )
+);
+?>
 
 <?$APPLICATION->IncludeComponent(
     "leadspace:case.roadmap",
@@ -354,8 +360,6 @@ $APPLICATION->SetTitle("TITLE_PLACEHOLDER");
         "LIST_URL" => "https://3d-group.space/thank.php",
         "EDIT_URL" => "",
         "SUCCESS_URL" => "",
-        "SECTION_TITLE" => "Нужна интеграция с сервисом?",
-        "SECTION_TEXT" => "Оставьте свой номер телефона для связи",
         "BUTTON_TEXT" => "отправить",
         "PRIVACY_URL" => "/privacy/",
         "PERSONAL_DATA_URL" => "/personal-data/",
@@ -702,8 +706,6 @@ $APPLICATION->IncludeComponent(
         "LIST_URL" => "https://3d-group.space/thank.php",
         "EDIT_URL" => "",
         "SUCCESS_URL" => "",
-        "SECTION_TITLE" => "Нужна интеграция с сервисом?",
-        "SECTION_TEXT" => "Оставьте свой номер телефона для связи",
         "BUTTON_TEXT" => "отправить",
         "PRIVACY_URL" => "/privacy/",
         "PERSONAL_DATA_URL" => "/personal-data/",

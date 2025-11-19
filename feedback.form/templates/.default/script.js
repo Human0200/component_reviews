@@ -2,10 +2,13 @@ function toggleFeedbackForm(formId) {
     var formContainer = document.getElementById(formId);
     if (formContainer.style.display === 'none') {
         formContainer.style.display = 'block';
+        document.getElementById('feedback-form-button').style.display = 'none';
     } else {
         formContainer.style.display = 'none';
+        document.getElementById('feedback-form-button').style.display = 'block';
     }
 }
+
 
 function validateFeedbackForm(form) {
     var name = form.querySelector('[name="name"]').value.trim();

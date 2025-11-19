@@ -22,7 +22,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
             </div>
         <?php endif; ?>
         
-        <button type="button" class="btn btn-default" onclick="toggleFeedbackForm('<?= $arResult["FORM_ID"] ?>')">
+        <button type="button" class="btn btn-default" id="feedback-form-button" onclick="toggleFeedbackForm('<?= $arResult["FORM_ID"] ?>')">
             <?= htmlspecialchars($arParams["BUTTON_TEXT"]) ?>
         </button>
         
